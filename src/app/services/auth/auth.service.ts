@@ -44,7 +44,6 @@ export class AuthService {
     this.checkStoredToken();
   }
 
-  // Registro de usuario
   register(userData: RegisterRequest): Observable<AuthResponse> {
     const headers = new HttpHeaders({
       'x-api-key': 'my-secret-api-key',
@@ -62,7 +61,6 @@ export class AuthService {
       );
   }
 
-  // Login de usuario
   login(credentials: LoginRequest): Observable<AuthResponse> {
     const headers = new HttpHeaders({
       'x-api-key': 'my-secret-api-key',
