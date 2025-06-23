@@ -1,0 +1,30 @@
+<div class="container mt-4">
+    <div class="row g-4">
+        <div class="col-12 col-md-6 col-lg-4" *ngFor="let product of products">
+            <p-card [style]="{ width: '100%', overflow: 'hidden', cursor: 'pointer' }"
+                (click)="verProducto(product.id)">
+                <ng-template #header>
+                    <img alt="Product Image" class="img-fluid"
+                        src="https://primefaces.org/cdn/primeng/images/galleria/galleria10.jpg" />
+                </ng-template>
+
+                <ng-template #title>{{ product.name }}</ng-template>
+                <ng-template #subtitle>{{ product.category }}</ng-template>
+
+                <p>{{ product.description }}</p>
+
+                <ng-template #footer>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <span class="fw-bold fs-5">${{ product.price }}</span>
+                        <div class="d-flex gap-2">
+
+                            <p-button label="Agregar al carrito" icon="pi pi-shopping-cart" size="small"
+                                (click)="agregarAlCarrito(product); $event.stopPropagation()"></p-button>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-card>
+        </div>
+
+    </div>
+</div>

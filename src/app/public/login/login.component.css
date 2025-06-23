@@ -1,0 +1,85 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.field {
+  margin-bottom: 1.5rem;
+}
+
+:host ::ng-deep .p-card-header {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding-bottom: 0.5rem;
+}
+
+:host ::ng-deep .p-card-body {
+  padding: 2rem;
+}
+
+:host ::ng-deep .p-card-content {
+  padding: 0;
+}
+
+:host ::ng-deep .p-floatlabel {
+  width: 100%;
+}
+
+:host ::ng-deep .p-inputtext,
+:host ::ng-deep .p-password input {
+  width: 100%;
+}
+
+:host ::ng-deep .p-password {
+  width: 100%;
+}
+
+:host ::ng-deep .p-button {
+  margin-top: 1rem;
+}
+
+:host ::ng-deep .p-divider {
+  margin: 1.5rem 0;
+}
+
+.p-error {
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.register-link {
+  text-align: center;
+}
+
+.link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    padding: 0.5rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+
+  :host ::ng-deep .p-card-body {
+    padding: 1.5rem;
+  }
+}
