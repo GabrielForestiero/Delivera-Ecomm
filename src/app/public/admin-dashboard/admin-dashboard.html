@@ -1,0 +1,75 @@
+<div class="admin-container">
+  <div class="header">
+    <div class="header-content">
+      <div class="header-title">
+        <i class="fas fa-shopping-cart"></i>
+        Órdenes de Compra
+      </div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="orders-container">
+      <div *ngIf="loading" class="loading-container">
+        <div class="spinner"></div>
+        <div class="loading-text">Cargando órdenes...</div>
+      </div>
+      <div *ngIf="!loading && filteredOrders.length === 0" class="no-orders">
+        <div class="no-orders-icon">
+          <i class="fas fa-inbox"></i>
+        </div>
+        <h3>No se encontraron órdenes</h3>
+        <p>No hay órdenes que coincidan con los filtros aplicados.</p>
+      </div>
+      <div *ngIf="!loading && filteredOrders.length > 0" class="orders-grid">
+        <div *ngFor="let order of filteredOrders; trackBy: trackByOrderId" class="order-card fade-in">
+          <div class="order-header">
+            <div class="order-id">
+              <i class="fas fa-hashtag"></i>
+              {{ order._id }}
+            </div>
+            <div class="order-total">
+              {{ order.total | currency:'USD':'symbol':'1.2-2' }}
+            </div>
+          </div>
+          <div class="order-details">
+            <div class="detail-item">
+              <div class="detail-icon payment-icon">
+                <i [class]="getPaymentIcon(order.paymentMethod)"></i>
+              </div>
+              <div class="detail-content">
+                <div class="detail-label">Método de Pago</div>
+                <div class="detail-value">{{ getPaymentMethodLabel(order.paymentMethod) }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="status-section">
+            <div class="status-current">
+              <i class="fas fa-info-circle"></i>
+              <span class="status-badge" [ngClass]="getStatusClass(order.status)">
+                {{ getStatusLabel(order.status) }}
+              </span>
+            </div>
+
+            <div class="status-controls">
+              <select class="status-select" [(ngModel)]="order.tempStatus" (ngModelChange)="onTempStatusChange(order)">
+                <option *ngFor="let status of statusOptions" [value]="status.value">
+                  {{ status.label }}
+                </option>
+              </select>
+              <button class="update-btn" [disabled]="order.tempStatus === order.status || updating"
+                (click)="confirmStatusUpdate(order)">
+                <i class="fas fa-check"></i>
+                <span *ngIf="!updating">Actualizar</span>
+                <span *ngIf="updating">Actualizando...</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="notification" class="notification-toast" [ngClass]="'notification-' + notification.type">
+  <i [class]="getNotificationIcon(notification.type)"></i>
+  {{ notification.message }}
+</div>
