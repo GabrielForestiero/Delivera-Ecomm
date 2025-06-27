@@ -99,7 +99,7 @@ export class AuthService {
         const payload = JSON.parse(atob(token.split('.')[1]));
         return payload;
       } catch (error) {
-        console.error('❌ Error decodificando token:', error);
+        console.error('Error decodificando token:', error);
         return null;
       }
     }

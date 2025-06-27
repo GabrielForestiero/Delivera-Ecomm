@@ -29,18 +29,15 @@ interface NotificationToast {
   styleUrls: ['./admin-dashboard.css']
 })
 export class AdminDashboardComponent implements OnInit {
-  // Propiedades existentes
   orders: (Order & { tempStatus: string })[] = [];
   filteredOrders: (Order & { tempStatus: string })[] = [];
   loading = true;
   updating = false;
 
-  // Propiedades para filtros
-  searchTerm = '';
-  statusFilter = '';
-  paymentFilter = '';
+  searchId = '';  
+  filterStatus = '';  
+  filterPaymentMethod = '';  
 
-  // Propiedades para notificaciones
   notification: NotificationToast | null = null;
 
   statusOptions = [
@@ -74,13 +71,12 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  // Métodos para filtros
   applyFilters(): void {
     this.filteredOrders = this.orders.filter(order => {
-      const matchesSearch = !this.searchTerm || 
-        order._id.toLowerCase().includes(this.searchTerm.toLowerCase());
-      const matchesStatus = !this.statusFilter || order.status === this.statusFilter;
-      const matchesPayment = !this.paymentFilter || order.paymentMethod === this.paymentFilter;
+      const matchesSearch = !this.searchId || 
+        order._id.toLowerCase().includes(this.searchId.toLowerCase());
+      const matchesStatus = !this.filterStatus || order.status === this.filterStatus;
+      const matchesPayment = !this.filterPaymentMethod || order.paymentMethod === this.filterPaymentMethod;
       
       return matchesSearch && matchesStatus && matchesPayment;
     });
@@ -90,9 +86,8 @@ export class AdminDashboardComponent implements OnInit {
     this.loadOrders();
   }
 
-  // Métodos para el manejo de estados
   onTempStatusChange(order: Order & { tempStatus: string }): void {
-    // Este método se ejecuta cuando cambia el select
+    
   }
 
   confirmStatusUpdate(order: Order & { tempStatus: string }): void {
@@ -118,7 +113,14 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  // Métodos de utilidad para el template
+ 
+  viewOrder(order: Order): void {
+    
+    console.log('Ver orden:', order);
+    
+  }
+
+
   trackByOrderId(index: number, order: Order): string {
     return order._id;
   }
@@ -150,8 +152,10 @@ export class AdminDashboardComponent implements OnInit {
   getPaymentIcon(paymentMethod: string): string {
     const icons: { [key: string]: string } = {
       'credit-card': 'fas fa-credit-card',
+      'card': 'fas fa-credit-card', 
       'paypal': 'fab fa-paypal',
-      'bank-transfer': 'fas fa-university'
+      'bank-transfer': 'fas fa-university',
+      'transfer': 'fas fa-university'  
     };
     return icons[paymentMethod] || 'fas fa-money-bill';
   }
@@ -159,17 +163,17 @@ export class AdminDashboardComponent implements OnInit {
   getPaymentMethodLabel(paymentMethod: string): string {
     const labels: { [key: string]: string } = {
       'credit-card': 'Tarjeta de Crédito',
+      'card': 'Tarjeta', 
       'paypal': 'PayPal',
-      'bank-transfer': 'Transferencia Bancaria'
+      'bank-transfer': 'Transferencia Bancaria',
+      'transfer': 'Transferencia'  
     };
     return labels[paymentMethod] || paymentMethod;
   }
 
-  // Métodos para notificaciones
   showNotification(type: NotificationToast['type'], message: string): void {
     this.notification = { type, message };
     
-    // Auto-ocultar notificación después de 4 segundos
     setTimeout(() => {
       this.notification = null;
     }, 4000);

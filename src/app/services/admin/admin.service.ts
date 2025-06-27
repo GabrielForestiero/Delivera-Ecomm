@@ -7,7 +7,7 @@ export interface Order {
   _id: any;
   status: string;
   total: number
-  paymentMethod: 'card' | 'cash' | 'paypal' | string;
+  paymentMethod: 'card'  | 'transfer' ;
   cardData?: {
     cardNumber: string;
     cardCvv: string;
