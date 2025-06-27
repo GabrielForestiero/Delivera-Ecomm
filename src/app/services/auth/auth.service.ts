@@ -4,7 +4,6 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
-
 export interface RegisterRequest {
   email: string;
   name: string;
@@ -26,6 +25,7 @@ export interface AuthResponse {
     name: string;
     address: string;
     phone: string;
+    role: string;
   };
   token?: string;
 }
@@ -92,6 +92,29 @@ export class AuthService {
     return localStorage.getItem(this.tokenKey);
   }
 
+  getCurrentUser(): any | null {
+    const token = this.getToken();
+    if (token && !this.isTokenExpired(token)) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload;
+      } catch (error) {
+        console.error('Error decodificando token:', error);
+        return null;
+      }
+    }
+    return null;
+  }
+
+  isAdmin(): boolean {
+    const user = this.getCurrentUser();
+    return user && user.role === 'admin';
+  }
+
+  getCurrentUserObservable(): Observable<any> {
+    return this.user$;
+  }
+
   private setToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
   }
@@ -99,7 +122,13 @@ export class AuthService {
   private checkStoredToken(): void {
     const token = this.getToken();
     if (token && !this.isTokenExpired(token)) {
-      this.userSubject.next({ authenticated: true });
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        this.userSubject.next(payload);
+      } catch (error) {
+        console.error('Error decodificando token almacenado:', error);
+        this.userSubject.next({ authenticated: true });
+      }
     }
   }
 
@@ -120,9 +149,5 @@ export class AuthService {
       'x-api-key': 'my-secret-api-key',
       'Content-Type': 'application/json'
     });
-  }
-
-  getCurrentUser(): Observable<any> {
-    return this.user$;
   }
 }

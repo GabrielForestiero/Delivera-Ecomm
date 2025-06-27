@@ -4,7 +4,8 @@ import { HomeComponent } from './public/home/home.component';
 import { DetailProductoComponent } from './modules/productos/detail-producto/detail-producto.component';
 import { RegisterComponent } from '../app/public/register/register.component';
 import { LoginComponent } from '../app/public/login/login.component';
-
+import { AdminDashboardComponent } from '../app/public/admin-dashboard/admin-dashboard';
+import { AdminGuard } from './guards/admin.guard'; // Importar el AdminGuard
 
 export const routes: Routes = [
   // Rutas de autenticación (públicas)
@@ -26,6 +27,23 @@ export const routes: Routes = [
       }
     ]
   },
+
+  // Rutas de administración (protegidas con AdminGuard)
+  {
+    path: 'admin',
+    canActivate: [AdminGuard], // Proteger toda la ruta admin
+    children: [
+      {
+        path: '',
+        component: AdminDashboardComponent
+      },
+      {
+        path: 'dashboard',
+        redirectTo: '', // Redirigir a /admin (ruta padre)
+        pathMatch: 'full'
+      }
+    ]
+  },
   
   // Rutas principales de la aplicación
   {
@@ -43,7 +61,7 @@ export const routes: Routes = [
     ]
   },
   
-  // Redirección para rutas no encontradas
+
   {
     path: '**',
     redirectTo: ''
