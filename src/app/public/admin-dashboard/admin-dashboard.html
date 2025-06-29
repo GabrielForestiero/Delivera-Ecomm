@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Órdenes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+</head>
+<body>
+    <div class="admin-container">
+       
+        <div class="header">
+            <div class="header-content">
+                <div class="header-title">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Órdenes de Compra</span>
+                </div>
+            </div>
+        </div>
+
+       
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Buscar por ID</label>
+                    <input type="text" class="filter-input" placeholder="Ingrese ID de orden..." 
+                           [(ngModel)]="searchId" (ngModelChange)="applyFilters()">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Estado</label>
+                    <select class="filter-select" [(ngModel)]="filterStatus" (ngModelChange)="applyFilters()">
+                        <option value="">Todos los estados</option>
+                        <option *ngFor="let status of statusOptions" [value]="status.value">
+                            {{ status.label }}
+                        </option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Método de Pago</label>
+                    <select class="filter-select" [(ngModel)]="filterPaymentMethod" (ngModelChange)="applyFilters()">
+                        <option value="">Todos los métodos</option>
+                        <option value="card">Tarjeta</option>
+                        <option value="transfer">Transferencia</option>
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button class="refresh-btn" (click)="loadOrders()" [disabled]="loading">
+                        <span *ngIf="!loading">Buscar</span>
+                        <span *ngIf="loading">Actualizando...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+       
+        <div class="orders-section">
+            <div class="orders-header">
+                <h3 class="section-title">Lista de Órdenes</h3>
+            </div>
+
+            <div *ngIf="loading" class="loading-container">
+                <div class="spinner"></div>
+                <div class="loading-text">Cargando órdenes...</div>
+            </div>
+
+           
+            <div *ngIf="!loading && filteredOrders.length === 0" class="no-orders">
+                <div class="no-orders-icon">
+                    <i class="fas fa-inbox"></i>
+                </div>
+                <h3>No se encontraron órdenes</h3>
+                <p>No hay órdenes que coincidan con los filtros aplicados.</p>
+            </div>
+
+          
+            <div *ngIf="!loading && filteredOrders.length > 0" class="table-container">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>ID Orden</th>
+                            <th>Total</th>
+                            <th>Método de Pago</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let order of filteredOrders; trackBy: trackByOrderId" class="order-row">
+                            <td class="order-id">
+                                <span class="id-badge">{{ order._id }}</span>
+                            </td>
+                            <td class="order-total">
+                                <span class="price">{{ order.total | currency:'USD':'symbol':'1.2-2' }}</span>
+                            </td>
+                            <td class="payment-method">
+                                <div class="payment-info">
+                                    <i [class]="getPaymentIcon(order.paymentMethod)"></i>
+                                    <span>{{ getPaymentMethodLabel(order.paymentMethod) }}</span>
+                                </div>
+                            </td>
+                            <td class="order-status">
+                                <span class="status-badge" [ngClass]="getStatusClass(order.status)">
+                                    {{ getStatusLabel(order.status) }}
+                                </span>
+                            </td>
+                            <td class="order-actions">
+                                <div class="action-group">
+                                    <select class="status-select compact" 
+                                            [(ngModel)]="order.tempStatus" 
+                                            (ngModelChange)="onTempStatusChange(order)">
+                                        <option *ngFor="let status of statusOptions" [value]="status.value">
+                                            {{ status.label }}
+                                        </option>
+                                    </select>
+                                    <button class="update-btn compact" 
+                                            [disabled]="order.tempStatus === order.status || updating"
+                                            (click)="confirmStatusUpdate(order)">
+                                        <i class="fas fa-edit" *ngIf="!updating"></i>
+                                        <i class="fas fa-spinner fa-spin" *ngIf="updating"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="loading-overlay">
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <div class="loading-text">Cargando órdenes...</div>
+        </div>
+    </div>
+
+    <div *ngIf="notification" class="notification-toast" [ngClass]="'notification-' + notification.type">
+        <i [class]="getNotificationIcon(notification.type)"></i>
+        {{ notification.message }}
+    </div>
+</body>
+</html>
