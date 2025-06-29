@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProductoService } from '../../../services/productos/producto.service';
-import { Producto } from '../../interfaces/producto';
+import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -17,7 +17,7 @@ import { CardModule } from 'primeng/card';
 export class DetailProductoComponent {
 
 
-  product?: Producto;
+  product?: Product;
 
 
   constructor(

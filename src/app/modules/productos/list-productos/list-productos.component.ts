@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { Producto } from '../../interfaces/producto';
+import { Product } from '../../interfaces/product';
 import { ProductoService } from '../../../services/productos/producto.service';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -15,8 +15,8 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class ListProductosComponent {
 
-  carrito: Producto[] = [];
-  products: Producto[] = [];
+  carrito: Product[] = [];
+  products: Product[] = [];
 
   constructor(private productService: ProductoService,
     private router: Router
@@ -29,7 +29,7 @@ export class ListProductosComponent {
   }
 
 
-  agregarAlCarrito(producto: Producto) {
+  agregarAlCarrito(producto: Product) {
     this.carrito.push(producto)
 
     console.log("Se agregó:  " + producto.name + " al carrito");

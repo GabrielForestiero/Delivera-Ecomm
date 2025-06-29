@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Producto } from '../../modules/interfaces/producto';
+import { Product } from '../../modules/interfaces/product';
 import { MOCK_PRODUCTS } from '../../modules/interfaces/mock-product';
 import { map, Observable, of } from 'rxjs';
 
@@ -13,11 +13,11 @@ export class ProductoService {
   constructor() { }
 
 
-  getProducts(): Observable<Producto[]> {
+  getProducts(): Observable<Product[]> {
     return of(MOCK_PRODUCTS); // simula una llamada HTTP
   }
 
-  getProductById(id: number): Observable<Producto | undefined> {
+  getProductById(id: number): Observable<Product | undefined> {
     return this.getProducts().pipe(
       map(products => products.find(p => p.id === id))
     );
