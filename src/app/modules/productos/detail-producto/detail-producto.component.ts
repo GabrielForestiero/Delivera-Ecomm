@@ -4,10 +4,13 @@ import { ProductoService } from '../../../services/productos/producto.service';
 import { Producto } from '../../interfaces/producto';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+
+
 
 @Component({
   selector: 'app-detail-producto',
-  imports: [CommonModule, ButtonModule],
+  imports: [CommonModule, ButtonModule, CardModule],
   templateUrl: './detail-producto.component.html',
   styleUrl: './detail-producto.component.css'
 })
@@ -31,7 +34,7 @@ export class DetailProductoComponent {
   }
 
   goBack() {
-    throw new Error('Method not implemented.');
+    
   }
 
 }
