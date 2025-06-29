@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
 import { MenuComponent } from "./public/menu/menu.component";
-import { HomeComponent } from "./public/home/home.component";
-import { ListProductosComponent } from "./modules/productos/list-productos/list-productos.component";
 import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [MenuComponent, HomeComponent, RouterModule],
+  imports: [MenuComponent, RouterModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
