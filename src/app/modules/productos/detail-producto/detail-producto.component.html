@@ -2,11 +2,8 @@
   <p-card class="product-card">
     <div class="card-content">
       <div class="product-image-container">
-        <img 
-          src="https://primefaces.org/cdn/primeng/images/galleria/galleria10.jpg" 
-          alt="Imagen del producto"
-          class="product-image"
-        />
+        <img src="https://primefaces.org/cdn/primeng/images/galleria/galleria10.jpg" alt="Imagen del producto"
+          class="product-image" />
       </div>
 
       <div class="product-details">
@@ -15,12 +12,24 @@
         <p>{{ product.description }}</p>
         <p><strong>Precio:</strong> ${{ product.price }}</p>
 
-        <div class="add-to-cart">
-          <p-button 
-            label="Agregar al carrito" 
-            icon="pi pi-shopping-cart" 
-            size="small"
-          ></p-button>
+        <div class="add-to-cart mt-3">
+          <ng-container *ngIf="productQuantity > 0; else agregarBtn">
+            <div class="d-flex justify-content-end align-items-center gap-2" style="width: 100%;">
+              <button pButton icon="pi pi-minus" size="small" (click)="eliminarDelCarrito()"
+                style="flex: none;"></button>
+
+              <span class="text-center" style="min-width: 30px;">
+                {{ productQuantity }}
+              </span>
+
+              <button pButton icon="pi pi-plus" size="small" (click)="agregarAlCarrito()" style="flex: none;"></button>
+            </div>
+          </ng-container>
+
+          <ng-template #agregarBtn>
+            <p-button label="Agregar al carrito" icon="pi pi-shopping-cart" size="small"
+              (click)="agregarAlCarrito()"></p-button>
+          </ng-template>
         </div>
       </div>
     </div>

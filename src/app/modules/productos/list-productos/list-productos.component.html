@@ -17,10 +17,27 @@
                     <div class="d-flex justify-content-between align-items-center mt-2">
                         <span class="fw-bold fs-5">${{ product.price }}</span>
                         <div class="d-flex gap-2">
+                            <ng-container *ngIf="getProductQuantity(product.id) > 0; else agregarBtn">
+                                <div class="d-flex justify-content-between w-100">
+                                    <button pButton icon="pi pi-minus" size="small" class="flex-grow-1 me-1"
+                                        (click)="eliminarDelCarrito(product); $event.stopPropagation()"></button>
 
-                            <p-button label="Agregar al carrito" icon="pi pi-shopping-cart" size="small"
-                                (click)="agregarAlCarrito(product); $event.stopPropagation()"></p-button>
+                                    <span class="align-self-center text-center" style="min-width: 40px;">
+                                        {{ getProductQuantity(product.id) }}
+                                    </span>
+
+                                    <button pButton icon="pi pi-plus" size="small" class="flex-grow-1 ms-1"
+                                        (click)="agregarAlCarrito(product); $event.stopPropagation()"></button>
+                                </div>
+                            </ng-container>
+
+
+                            <ng-template #agregarBtn>
+                                <p-button label="Agregar al carrito" icon="pi pi-shopping-cart" size="small"
+                                    (click)="agregarAlCarrito(product);  $event.stopPropagation()"></p-button>
+                            </ng-template>
                         </div>
+
                     </div>
                 </ng-template>
             </p-card>

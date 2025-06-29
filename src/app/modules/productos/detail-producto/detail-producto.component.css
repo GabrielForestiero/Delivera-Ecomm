@@ -9,6 +9,7 @@
 .product-card {
     width: 100%;
     max-width: 1000px;
+    position: relative;
 }
 
 .product-card .card-content {
@@ -19,7 +20,7 @@
 }
 
 .product-image-container {
-    flex: 0 0 300px; 
+    flex: 0 0 300px;
 }
 
 .product-image {
@@ -37,7 +38,10 @@
 }
 
 .add-to-cart {
-    margin-top: auto;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
 }

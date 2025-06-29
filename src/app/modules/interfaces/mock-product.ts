@@ -1,25 +1,37 @@
 import { Product } from "./product";
 
 export const MOCK_PRODUCTS: Product[] = [
-  {
+ {
     id: 1,
-    name: 'Notebook HP',
-    description: 'Notebook HP 15.6" con 8GB RAM y 256GB SSD',
-    category: 'Electrónica',
-    price: 550000
+    name: 'Coca Cola',
+    description: 'Bebida gaseosa clásica',
+    price: 150,
+    originalStock: 100,
+    stock: 80,
+    imageUrl: 'https://example.com/coca.jpg',
+    category: 'Bebidas',
+    createdAt: new Date('2025-01-01')
   },
   {
     id: 2,
-    name: 'Zapatillas Nike',
-    description: 'Zapatillas deportivas para correr',
-    category: 'Calzado',
-    price: 85000
+    name: 'Pizza Margarita',
+    description: 'Pizza con tomate, mozzarella y albahaca',
+    price: 800,
+    originalStock: 50,
+    stock: 20,
+    imageUrl: 'https://example.com/pizza.jpg',
+    category: 'Pizzas',
+    createdAt: new Date('2025-02-15')
   },
   {
     id: 3,
-    name: 'Cafetera Philips',
-    description: 'Cafetera automática para espresso',
-    category: 'Electrodomésticos',
-    price: 120000
+    name: 'Café Espresso',
+    description: 'Café fuerte y concentrado',
+    price: 200,
+    originalStock: 200,
+    stock: 150,
+    imageUrl: 'https://example.com/cafe.jpg',
+    category: 'Café y Té',
+    createdAt: new Date('2025-03-10')
   }
 ];
