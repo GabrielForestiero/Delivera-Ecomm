@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { Product } from '../../interfaces/product';
-import { ProductoService } from '../../../services/productos/producto.service';
+import { ProductService } from '../../../services/productos/product.service';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 
@@ -18,7 +18,7 @@ export class ListProductosComponent {
   carrito: Product[] = [];
   products: Product[] = [];
 
-  constructor(private productService: ProductoService,
+  constructor(private productService: ProductService,
     private router: Router
   ) { }
 

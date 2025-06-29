@@ -6,7 +6,7 @@ import { map, Observable, of } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ProductoService {
+export class ProductService {
 
 
 

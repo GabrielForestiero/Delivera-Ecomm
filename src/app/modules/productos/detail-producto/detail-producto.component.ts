@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ProductoService } from '../../../services/productos/producto.service';
+import { ProductService } from '../../../services/productos/product.service';
 import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -22,7 +22,7 @@ export class DetailProductoComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private productService: ProductoService
+    private productService: ProductService
   ) {
 
   }
