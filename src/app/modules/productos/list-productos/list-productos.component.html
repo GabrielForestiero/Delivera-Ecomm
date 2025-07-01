@@ -2,7 +2,7 @@
     <div class="row g-4">
         <div class="col-12 col-md-6 col-lg-4" *ngFor="let product of products">
             <p-card [style]="{ width: '100%', overflow: 'hidden', cursor: 'pointer' }"
-                (click)="verProducto(product.id)">
+                (click)="verProducto(product._id)">
                 <ng-template #header>
                     <img alt="Product Image" class="img-fluid"
                         src="https://primefaces.org/cdn/primeng/images/galleria/galleria10.jpg" />
@@ -17,13 +17,13 @@
                     <div class="d-flex justify-content-between align-items-center mt-2">
                         <span class="fw-bold fs-5">${{ product.price }}</span>
                         <div class="d-flex gap-2">
-                            <ng-container *ngIf="getProductQuantity(product.id) > 0; else agregarBtn">
+                            <ng-container *ngIf="getProductQuantity(product._id) > 0; else agregarBtn">
                                 <div class="d-flex justify-content-between w-100">
                                     <button pButton icon="pi pi-minus" size="small" class="flex-grow-1 me-1"
                                         (click)="eliminarDelCarrito(product); $event.stopPropagation()"></button>
 
                                     <span class="align-self-center text-center" style="min-width: 40px;">
-                                        {{ getProductQuantity(product.id) }}
+                                        {{ getProductQuantity(product._id) }}
                                     </span>
 
                                     <button pButton icon="pi pi-plus" size="small" class="flex-grow-1 ms-1"
@@ -44,4 +44,4 @@
         </div>
 
     </div>
-</div>
+</div>  

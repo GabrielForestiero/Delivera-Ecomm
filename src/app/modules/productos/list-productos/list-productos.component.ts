@@ -7,6 +7,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../../services/carrito/cart.service';
 import { Subscription } from 'rxjs';
 import { ProductService } from '../../../services/productos/producto.service';
+import { Cart } from '../../interfaces/cart';
 
 
 @Component({
@@ -17,11 +18,11 @@ import { ProductService } from '../../../services/productos/producto.service';
 })
 export class ListProductosComponent {
 
-  carrito: Product[] = [];
+  carrito: Cart = { items: [], total: 0 }; 
   products: Product[] = [];
-  productQuantities: { [productId: number]: number } = {};
+  productQuantities: { [productId: string]: number } = {};
 
-  private subscription?: Subscription;
+  private subscription = new Subscription();
 
 
 
@@ -33,21 +34,21 @@ export class ListProductosComponent {
   ngOnInit(): void {
     this.productService.getProducts().subscribe((data) => {
       this.products = data;
+      console.log(this.products)
     });
 
     
-    this.cartService.getCart().subscribe({
-      next: (cart) => console.log('Carrito cargado', cart),
-      error: (err) => console.error('Error al cargar carrito', err)
-    });
+    this.cartService.getCart();
 
-
-    this.subscription = this.cartService.productQuantities$.subscribe(cantidad => {
-      this.productQuantities = cantidad;
-    });
+    this.subscription.add(
+      this.cartService.cart$.subscribe(cart => {
+        this.carrito = cart;
+        console.log('Carrito actualizado', cart);
+      })
+    );
   }
 
-  verProducto(id: number) {
+  verProducto(id: string) {
     this.router.navigate(['/productos', id]);
   }
 
@@ -55,21 +56,16 @@ export class ListProductosComponent {
 
 
   agregarAlCarrito(product: Product) {
-    this.cartService.addProduct(product.id).subscribe({
-      next: (cart) => console.log('Producto agregado', cart),
-      error: (err) => console.error('Error al agregar', err)
-    });
+    this.cartService.addProduct(product._id)
   }
 
   eliminarDelCarrito(product: Product) {
-    this.cartService.removeProduct(product.id).subscribe({
-      next: (cart) => console.log('Producto eliminado', cart),
-      error: (err) => console.error('Error al eliminar', err)
-    });
+    this.cartService.removeProduct(product._id)
   }
 
-  getProductQuantity(productId: number): number {
-    return this.productQuantities[productId] || 0;
+  getProductQuantity(productId: string): number {
+    const item = this.carrito.items.find(i => i.productId === productId);
+    return item ? item.quantity : 0;
   }
 
   ngOnDestroy(): void {

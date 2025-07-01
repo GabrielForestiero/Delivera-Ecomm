@@ -21,7 +21,7 @@ export class DetailProductoComponent {
 
   product?: Product;
   productQuantity: number = 0;
-  private subscription?: Subscription;
+  private subscription = new Subscription();
 
 
 
@@ -35,33 +35,42 @@ export class DetailProductoComponent {
 
 
   ngOnInit() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = String(this.route.snapshot.paramMap.get('id'));
 
     this.productService.getProductById(id).subscribe(p => {
       this.product = p;
+      this.updateProductQuantity();
+
     });
 
-    this.cartService.getCart().subscribe();
 
-    this.subscription = this.cartService.productQuantities$.subscribe(cantidad => {
-      if (this.product) {
-        this.productQuantity = cantidad[this.product.id] || 0;
-      }
-    });
+    this.subscription.add(
+      this.cartService.cart$.subscribe(() => {
+        this.updateProductQuantity();
+      })
+    );
+
+    this.cartService.getCart();
   }
-
 
 
   agregarAlCarrito() {
     if (this.product) {
-      this.cartService.addProduct(this.product.id).subscribe();
+      this.cartService.addProduct(this.product._id)
     }
   }
 
   eliminarDelCarrito() {
     if (this.product) {
-      this.cartService.removeProduct(this.product.id).subscribe();
+      this.cartService.removeProduct(this.product._id)
     }
+  }
+
+  private updateProductQuantity() {
+    if (!this.product) return;
+    const cart = this.cartService.getCartValue();
+    const item = cart.items.find(i => i.productId === this.product!._id);
+    this.productQuantity = item ? item.quantity : 0;
   }
 
   goBack() { }

@@ -1,6 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Cart, Item } from '../../modules/interfaces/cart';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,15 +10,19 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 export class CartService {
   private apiUrl = 'http://localhost:3000/api/cart';
 
-  private productQuantitiesSubject = new BehaviorSubject<{ [productId: number]: number }>({});
-  productQuantities$ = this.productQuantitiesSubject.asObservable();
-  private productQuantities: { [productId: number]: number } = {};
+  private cartSubject = new BehaviorSubject<Cart>({ items: [], total: 0 });
+  cart$ = this.cartSubject.asObservable();
 
   private cartOpenSubject = new BehaviorSubject<boolean>(false);
   cartOpen$ = this.cartOpenSubject.asObservable();
 
+  constructor(private http: HttpClient,
+    private authService: AuthService
+  ) { }
 
-  constructor(private http: HttpClient) { }
+  getCartValue(): Cart {
+    return this.cartSubject.getValue();
+  }
 
 
   openCart() {
@@ -31,57 +37,88 @@ export class CartService {
     this.cartOpenSubject.next(!this.cartOpenSubject.value);
   }
 
+  getCart(): void {
+    const headers = this.authService.getAuthHeaders();
+    this.http.get<Cart>(this.apiUrl, { headers }).subscribe({
+      next: (cart) => this.cartSubject.next(cart),
+      error: (err) => console.error('Error cargando carrito', err)
+    });
+  }
 
+  addProduct(productId: string, quantity: number = 1): void {
+    const headers = this.authService.getAuthHeaders();
+    this.http.post<Cart>(this.apiUrl, { productId, quantity, action: 'add' }, { headers }).subscribe({
+      next: (cart) => this.cartSubject.next(cart),
+      error: (err) => console.error('Error agregando producto', err)
+    });
+  }
 
-  getCart(): Observable<any> {
-    return new Observable((observer) => {
-      this.http.get(this.apiUrl).subscribe({
-        next: (cart: any) => {
-          this.productQuantities = {};
-          cart.items.forEach((item: any) => {
-            this.productQuantities[item.productId] = item.quantity;
-          });
-
-          this.productQuantitiesSubject.next(this.productQuantities);
-          observer.next(cart);
-          observer.complete();
-        },
-        error: (err) => observer.error(err)
-      });
+  removeProduct(productId: string, quantity: number = 1): void {
+    const headers = this.authService.getAuthHeaders();
+    this.http.post<Cart>(this.apiUrl, { productId, quantity, action: 'remove' }, { headers }).subscribe({
+      next: (cart) => this.cartSubject.next(cart),
+      error: (err) => console.error('Error removiendo producto', err)
     });
   }
 
 
-  addProduct(productId: number, quantity: number = 1): Observable<any> {
-    this.productQuantities[productId] = (this.productQuantities[productId] || 0) + quantity;
-    this.productQuantitiesSubject.next({ ...this.productQuantities });
+  // getCart(): Observable<Cart> {
+  //   const headers = this.authService.getAuthHeaders();
 
-    return this.http.post(this.apiUrl, {
-      productId,
-      quantity,
-      action: 'add'
-    });
-  }
+  //   return new Observable((observer) => {
+  //     this.http.get<Cart>(this.apiUrl, { headers: headers }).subscribe({
+  //       next: (cart) => {
+  //         this.productQuantities = {};
+  //         cart.items.forEach((item: Item) => {
+  //           this.productQuantities[item.productId] = item.quantity;
+  //         });
 
-  removeProduct(productId: number, quantity: number = 1): Observable<any> {
-    const currentQty = this.productQuantities[productId] || 0;
-    if (currentQty - quantity <= 0) {
-      delete this.productQuantities[productId];
-    } else {
-      this.productQuantities[productId] = currentQty - quantity;
-    }
-    this.productQuantitiesSubject.next({ ...this.productQuantities });
+  //         this.productQuantitiesSubject.next({ ...this.productQuantities });
 
-    return this.http.post(this.apiUrl, {
-      productId,
-      quantity,
-      action: 'remove'
-    });
-  }
+  //         observer.next(cart);
+  //         observer.complete();
+  //       },
+  //       error: (err) => observer.error(err)
+  //     });
+  //   });
+  // }
 
 
-  clearCart(): Observable<any> {
-    return this.http.delete(this.apiUrl);
-  }
+  // addProduct(productId: string, quantity: number = 1): Observable<Cart> {
+  //   const headers = this.authService.getAuthHeaders();
+
+  //   this.productQuantities[productId] = (this.productQuantities[productId] || 0) + quantity;
+  //   this.productQuantitiesSubject.next({ ...this.productQuantities });
+
+  //   return this.http.post<Cart>(this.apiUrl, {
+  //     productId,
+  //     quantity,
+  //     action: 'add'
+  //   }, { headers: headers });
+  // }
+
+  // removeProduct(productId: string, quantity: number = 1): Observable<Cart> {
+  //   const headers = this.authService.getAuthHeaders();
+
+  //   const currentQty = this.productQuantities[productId] || 0;
+  //   if (currentQty - quantity <= 0) {
+  //     delete this.productQuantities[productId];
+  //   } else {
+  //     this.productQuantities[productId] = currentQty - quantity;
+  //   }
+  //   this.productQuantitiesSubject.next({ ...this.productQuantities });
+
+  //   return this.http.post<Cart>(this.apiUrl, {
+  //     productId,
+  //     quantity,
+  //     action: 'remove'
+  //   }, { headers: headers });
+  // }
+
+  // clearCart(): Observable<any> {
+  //   return this.http.delete(this.apiUrl, { headers: this.getHeaders() });
+  // }
+
+
 
 }

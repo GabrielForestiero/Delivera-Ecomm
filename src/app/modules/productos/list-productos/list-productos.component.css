@@ -1,0 +1,11 @@
+.product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.product-card .p-card-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}

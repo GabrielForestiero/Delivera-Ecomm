@@ -21,13 +21,13 @@ export type Category =
   | 'Otros';
 
 export interface Product {
-  id: number; 
+  _id: string; 
   name: string;
   description?: string;
   price: number;
   originalStock?: number;
   stock?: number;
   imageUrl?: string;
-  category: Category;
+  category: string;
   createdAt?: Date;
 }

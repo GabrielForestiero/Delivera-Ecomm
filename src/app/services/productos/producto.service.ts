@@ -1,26 +1,47 @@
 import { Injectable } from '@angular/core';
 import { Product } from '../../modules/interfaces/product';
-import { MOCK_PRODUCTS } from '../../modules/interfaces/mock-product';
-import { map, Observable, of } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
+  private apiUrl = 'http://localhost:3000/api/product';
+
+  constructor(private http: HttpClient,
+    private authService: AuthService
+  ) { }
 
 
-  constructor() { }
+
 
 
   getProducts(): Observable<Product[]> {
-    return of(MOCK_PRODUCTS); // simula una llamada HTTP
-  }
+    const headers = this.authService.getAuthHeaders();
 
-  getProductById(id: number): Observable<Product | undefined> {
-    return this.getProducts().pipe(
-      map(products => products.find(p => p.id === id))
+    return this.http.get<{ product: any[] }>(this.apiUrl, { headers }).pipe(
+      map(response => response.product)
     );
   }
+
+  getProductById(id: string): Observable<Product> {
+    const headers = this.authService.getAuthHeaders();
+
+    return this.http.get<{ product: Product }>(`${this.apiUrl}/${id}`, { headers }).pipe(
+      map(response => response.product)
+    );
+  }
+
+
+  createProduct(product: Product): Observable<Product> {
+    const headers = this.authService.getAuthHeaders();
+    return this.http.post<Product>(this.apiUrl, product, {
+      headers: headers
+    });
+  }
+
 
 }

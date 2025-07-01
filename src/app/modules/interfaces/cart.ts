@@ -1,13 +1,13 @@
-import { Product } from "./product";
-
 export interface Item {
-  productId: number; 
+  productId: string;
+  name: string;
+  price: number;
   quantity: number;
-  product?: Product; 
+  subtotal: number;
 }
 
 export interface Cart {
-  id?: string; 
+  cartId?: string; 
   items: Item[];
   createdAt?: Date;
   total?: number;
