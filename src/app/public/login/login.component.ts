@@ -61,10 +61,16 @@ export class LoginComponent {
       const loginData = this.loginForm.value;
 
       this.authService.login(loginData).subscribe({
-        next: () => {
+        next: (response) => {
           this.isLoading = false;
           this.successMessage = 'Inicio de sesión exitoso';
-          setTimeout(() => this.router.navigate(['/']), 1000);
+          setTimeout(() => {
+            if (this.authService.isAdmin()) {
+              this.router.navigate(['/admin']);
+            } else {
+              this.router.navigate(['/']);
+            }
+          }, 1000);
         },
         error: (error) => {
           this.isLoading = false;
