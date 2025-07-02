@@ -1,0 +1,116 @@
+<div class="cart-sidebar" [class.open]="isOpen">
+  <div class="cart-container m-3 p-3 border rounded" *ngIf="cart.items.length > 0; else emptyCart">
+
+    <div class="cart-header d-flex justify-content-between align-items-center mb-3">
+      <h3>Carrito</h3>
+      <button pButton icon="pi pi-times" class="btn-close" (click)="close()" [disabled]="isProcessingOrder"></button>
+    </div>
+
+    <hr>
+
+    <div class="cart-items-scroll">
+      <div class="cart-item d-flex align-items-center mb-3" *ngFor="let item of cart.items">
+
+        <div class="flex-grow-1">
+          <h5>{{ item.name }}</h5>
+          <p class="mb-1"><strong class="text-secondary">Precio unitario:</strong> ${{ item.price }}</p>
+          <p class="mb-1"><strong class="text-secondary">Subtotal:</strong> ${{ item.subtotal }}</p>
+        </div>
+
+        <div class="quantity-controls d-flex align-items-center gap-2">
+          <button pButton icon="pi pi-minus" size="small" (click)="disminuirCantidad(item.productId)"
+            [disabled]="isProcessingOrder"></button>
+          <span>{{ item.quantity }}</span>
+          <button pButton icon="pi pi-plus" size="small" (click)="incrementarCantidad(item.productId)"
+            [disabled]="isProcessingOrder"></button>
+        </div>
+
+        <button pButton icon="pi pi-trash" class="ms-3" (click)="eliminarDelCarrito(item.productId)" tooltip="Eliminar"
+          [disabled]="isProcessingOrder"></button>
+      </div>
+    </div>
+
+    <div class="cart-footer">
+      <div class="cart-total d-flex justify-content-between align-items-center">
+        <strong>Total:</strong>
+        <span class="fs-5 fw-bold">${{ cart.total }}</span>
+      </div>
+
+      <button pButton label="Finalizar compra" class="mt-3 w-100 btn btn-success" (click)="checkout()"
+        [disabled]="isProcessingOrder">
+      </button>
+    </div>
+  </div>
+
+  <ng-template #emptyCart>
+    <div class="alert alert-info text-center p-3">
+      <p>Tu carrito está vacío.</p>
+      <button pButton label="Cerrar" class="w-100 btn btn-secondary mt-2" (click)="close()"></button>
+    </div>
+  </ng-template>
+</div>
+
+<p-dialog [(visible)]="showPaymentDialog" [modal]="true" [closable]="false" header="Seleccionar método de pago"
+  [style]="{width: '90vw', maxWidth: '500px'}">
+
+  <div class="payment-form">
+
+    <div class="mb-4">
+      <h5>Método de pago</h5>
+
+      <div class="mb-3">
+        <p-radioButton name="payment" value="transfer" [(ngModel)]="paymentMethod" inputId="transfer"></p-radioButton>
+        <label for="transfer" class="ms-2">Transferencia bancaria</label>
+      </div>
+
+      <div class="mb-3">
+        <p-radioButton name="payment" value="card" [(ngModel)]="paymentMethod" inputId="card"></p-radioButton>
+        <label for="card" class="ms-2">Tarjeta de crédito/débito</label>
+      </div>
+    </div>
+
+    <div *ngIf="paymentMethod === 'card'" class="card-form">
+      <h6>Datos de la tarjeta</h6>
+
+      <div class="mb-3">
+        <label>Titular de la tarjeta</label>
+        <input pInputText [(ngModel)]="cardData.cardHolder" placeholder="Nombre completo" class="w-100">
+      </div>
+
+      <div class="mb-3">
+        <label>Número de tarjeta</label>
+        <input pInputText [(ngModel)]="cardData.cardNumber" (input)="formatCardNumber($event)"
+          placeholder="1234 5678 9012 3456" maxlength="19" class="w-100">
+        <small class="text-muted">Puedes usar: 4111 1111 1111 1111 (Visa de prueba)</small>
+      </div>
+
+      <div class="row">
+        <div class="col-6 mb-3">
+          <label>Fecha de vencimiento</label>
+          <input pInputText [(ngModel)]="cardData.cardValidThru" (input)="formatExpiryDate($event)" placeholder="MM/AA"
+            maxlength="5" class="w-100">
+        </div>
+        <div class="col-6 mb-3">
+          <label>CVV</label>
+          <input pInputText [(ngModel)]="cardData.cardCvv" (input)="formatCVV($event)" placeholder="123" maxlength="4"
+            class="w-100">
+        </div>
+      </div>
+    </div>
+
+
+    <div *ngIf="paymentMethod === 'transfer'" class="transfer-info alert alert-info">
+      <p><strong>Los datos de la transferencia se visualizaran en tu orden</strong></p>
+
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="d-flex gap-2">
+      <button pButton label="Cancelar" class="p-button-secondary" (click)="cancelPayment()"></button>
+      <button pButton [label]="isProcessingOrder ? 'Procesando...' : 'Confirmar compra'" class="p-button-success"
+        (click)="processPayment()" [disabled]="isProcessingOrder" [loading]="isProcessingOrder">
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>

@@ -1,37 +1,84 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ProductoService } from '../../../services/productos/producto.service';
-import { Producto } from '../../interfaces/producto';
+import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { CartService } from '../../../services/carrito/cart.service';
+import { Subscription } from 'rxjs';
+import { ProductService } from '../../../services/productos/producto.service';
+
+
 
 @Component({
   selector: 'app-detail-producto',
-  imports: [CommonModule, ButtonModule],
+  imports: [CommonModule, ButtonModule, CardModule],
   templateUrl: './detail-producto.component.html',
   styleUrl: './detail-producto.component.css'
 })
 export class DetailProductoComponent {
 
 
-  product?: Producto;
+  product?: Product;
+  productQuantity: number = 0;
+  private subscription = new Subscription();
+
 
 
   constructor(
     private route: ActivatedRoute,
-    private productService: ProductoService
+    private productService: ProductService,
+    private cartService: CartService
   ) {
 
   }
 
 
   ngOnInit() {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.productService.getProductById(id).subscribe(p => this.product = p);
+    const id = String(this.route.snapshot.paramMap.get('id'));
+
+    this.productService.getProductById(id).subscribe(p => {
+      this.product = p;
+      this.updateProductQuantity();
+
+    });
+
+
+    this.subscription.add(
+      this.cartService.cart$.subscribe(() => {
+        this.updateProductQuantity();
+      })
+    );
+
+    this.cartService.getCart();
   }
 
-  goBack() {
-    throw new Error('Method not implemented.');
+
+  agregarAlCarrito() {
+    if (this.product) {
+      this.cartService.addProduct(this.product._id)
+    }
   }
+
+  eliminarDelCarrito() {
+    if (this.product) {
+      this.cartService.removeProduct(this.product._id)
+    }
+  }
+
+  private updateProductQuantity() {
+    if (!this.product) return;
+    const cart = this.cartService.getCartValue();
+    const item = cart.items.find(i => i.productId === this.product!._id);
+    this.productQuantity = item ? item.quantity : 0;
+  }
+
+  goBack() { }
+
+
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
+  }
+
 
 }

@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { Producto } from '../../interfaces/producto';
-import { ProductoService } from '../../../services/productos/producto.service';
+import { Product } from '../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { CartService } from '../../../services/carrito/cart.service';
+import { Subscription } from 'rxjs';
+import { ProductService } from '../../../services/productos/producto.service';
+import { Cart } from '../../interfaces/cart';
 
 
 @Component({
@@ -15,30 +18,61 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class ListProductosComponent {
 
-  carrito: Producto[] = [];
-  products: Producto[] = [];
+  carrito: Cart = { items: [], total: 0 }; 
+  products: Product[] = [];
+  productQuantities: { [productId: string]: number } = {};
 
-  constructor(private productService: ProductoService,
+  private subscription = new Subscription();
+
+
+
+  constructor(private productService: ProductService,
+    private cartService: CartService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
     this.productService.getProducts().subscribe((data) => {
       this.products = data;
+      console.log(this.products)
     });
+
+    
+    this.cartService.getCart();
+
+    this.subscription.add(
+      this.cartService.cart$.subscribe(cart => {
+        this.carrito = cart;
+        console.log('Carrito actualizado', cart);
+      })
+    );
   }
 
-
-  agregarAlCarrito(producto: Producto) {
-    this.carrito.push(producto)
-
-    console.log("Se agregó:  " + producto.name + " al carrito");
-
-    }
-  
-    
-  verProducto(id: number) {
+  verProducto(id: string) {
     this.router.navigate(['/productos', id]);
   }
+
+
+
+
+  agregarAlCarrito(product: Product) {
+    this.cartService.addProduct(product._id)
+  }
+
+  eliminarDelCarrito(product: Product) {
+    this.cartService.removeProduct(product._id)
+  }
+
+  getProductQuantity(productId: string): number {
+    const item = this.carrito.items.find(i => i.productId === productId);
+    return item ? item.quantity : 0;
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
+  }
+
+
+
 
 }
