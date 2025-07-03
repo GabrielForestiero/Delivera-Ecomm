@@ -22,16 +22,16 @@ export class ProductService {
   getProducts(): Observable<Product[]> {
     const headers = this.authService.getAuthHeaders();
 
-    return this.http.get<{ product: any[] }>(this.apiUrl, { headers }).pipe(
-      map(response => response.product)
+    return this.http.get<{ products: any[] }>(this.apiUrl, { headers }).pipe(
+      map(response => response.products)
     );
   }
 
   getProductById(id: string): Observable<Product> {
     const headers = this.authService.getAuthHeaders();
 
-    return this.http.get<{ product: Product }>(`${this.apiUrl}/${id}`, { headers }).pipe(
-      map(response => response.product)
+    return this.http.get<{ products: Product }>(`${this.apiUrl}/${id}`, { headers }).pipe(
+      map(response => response.products)
     );
   }
 
