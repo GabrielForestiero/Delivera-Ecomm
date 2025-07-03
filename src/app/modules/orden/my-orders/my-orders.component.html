@@ -1,0 +1,36 @@
+<div *ngIf="isLoading" class="loading">Cargando órdenes...</div>
+
+<div *ngIf="!isLoading && errorMessage" class="error">
+  {{ errorMessage }}
+</div>
+
+<div *ngIf="!isLoading && order?.length === 0" class="no-orders">
+  No tenés órdenes registradas.
+</div>
+
+<div class="orders-container" *ngIf="!isLoading && order?.length > 0">
+  <h2>Mis Ordenes:</h2>
+  <div class="order-card" *ngFor="let o of order" (click)="goToOrderDetail(o._id)">
+    <div class="order-id">Número de orden: <span>{{ o._id }}</span></div>
+
+    <div class="order-info">
+      <div><strong>Monto</strong><br />${{ o.total }}</div>
+      <div><strong>Método</strong><br />{{ o.paymentMethod === 'card' ? 'Tarjeta' : 'Transferencia' }}</div>
+      <div>
+        <strong>Estado</strong><br />
+        <span [ngClass]="o.status">
+          {{
+          o.status === 'paid'
+          ? 'Pagado'
+          : o.status === 'pending'
+          ? 'Pendiente'
+          : o.status === 'expired'
+          ? 'Expirado'
+          : o.status
+          }}
+        </span>
+      </div>
+      <div><strong>Fecha</strong><br />{{ o.createdAt | date: 'short' }}</div>
+    </div>
+  </div>
+</div>

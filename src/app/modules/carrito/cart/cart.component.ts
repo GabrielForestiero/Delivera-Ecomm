@@ -9,7 +9,7 @@ import { CardModule } from 'primeng/card';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputTextModule } from 'primeng/inputtext';
 import { DialogModule } from 'primeng/dialog';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-cart',
   imports: [CommonModule, ButtonModule, CardModule, RadioButtonModule, InputTextModule, DialogModule, FormsModule],
@@ -34,7 +34,10 @@ export class CartComponent {
 
   private subscription?: Subscription;
 
-  constructor(private cartService: CartService) { }
+  constructor(
+    private cartService: CartService,
+    private router: Router
+) { }
 
   ngOnInit() {
     this.subscription = this.cartService.cartOpen$.subscribe(open => this.isOpen = open);
@@ -114,19 +117,15 @@ export class CartComponent {
     this.cartService.createOrder(this.paymentMethod, cardDataToSend)
       .subscribe({
         next: (response) => {
-          console.log('Orden creada exitosamente:', response);
-          alert('¡Compra finalizada exitosamente!');
-
+            const orderId = response?.order?._id || response?._id;
 
           this.cartService.clearCart();
-
-
           this.resetPaymentForm();
-
-
           this.close();
-
           this.isProcessingOrder = false;
+          if (orderId) {
+            this.router.navigate(['/orden', orderId]);
+          }
         },
         error: (error) => {
           console.error('Error al crear la orden:', error);

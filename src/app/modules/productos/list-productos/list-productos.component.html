@@ -1,47 +1,57 @@
-<div class="container mt-4">
-    <div class="row g-4">
-        <div class="col-12 col-md-6 col-lg-4" *ngFor="let product of products">
-            <p-card [style]="{ width: '100%', overflow: 'hidden', cursor: 'pointer' }"
-                (click)="verProducto(product._id)">
-                <ng-template #header>
-                    <img alt="Product Image" class="img-fluid"
-                        src="https://primefaces.org/cdn/primeng/images/galleria/galleria10.jpg" />
-                </ng-template>
+<div class="container py-5">
 
-                <ng-template #title>{{ product.name }}</ng-template>
-                <ng-template #subtitle>{{ product.category }}</ng-template>
+  <!-- FILTROS -->
+  <div class="card mb-5 shadow-sm border-0 rounded-4 p-4 bg-light">
+    <div class="row g-3 align-items-end">
 
-                <p>{{ product.description }}</p>
+      <div class="col-md-5">
+        <label for="nameFilter" class="form-label fw-bold text-secondary">Buscar por nombre</label>
+        <input id="nameFilter" type="text" pInputText [(ngModel)]="searchName" (input)="onFilterChange()"
+          placeholder="Ej: Pizza, Sushi..." class="form-control rounded-3" />
+      </div>
 
-                <ng-template #footer>
-                    <div class="d-flex justify-content-between align-items-center mt-2">
-                        <span class="fw-bold fs-5">${{ product.price }}</span>
-                        <div class="d-flex gap-2">
-                            <ng-container *ngIf="getProductQuantity(product._id) > 0; else agregarBtn">
-                                <div class="d-flex justify-content-between w-100">
-                                    <button pButton icon="pi pi-minus" size="small" class="flex-grow-1 me-1"
-                                        (click)="eliminarDelCarrito(product); $event.stopPropagation()"></button>
+      <div class="col-md-5">
+        <label for="categoryFilter" class="form-label fw-bold text-secondary">Filtrar por categoría</label>
+ <p-dropdown [options]="categories" [(ngModel)]="selectedCategory" (onChange)="onFilterChange()" placeholder="Seleccionar categoría"
+        [filter]="true" class="w-100"></p-dropdown>
+      </div>
 
-                                    <span class="align-self-center text-center" style="min-width: 40px;">
-                                        {{ getProductQuantity(product._id) }}
-                                    </span>
-
-                                    <button pButton icon="pi pi-plus" size="small" class="flex-grow-1 ms-1"
-                                        (click)="agregarAlCarrito(product); $event.stopPropagation()"></button>
-                                </div>
-                            </ng-container>
-
-
-                            <ng-template #agregarBtn>
-                                <p-button label="Agregar al carrito" icon="pi pi-shopping-cart" size="small"
-                                    (click)="agregarAlCarrito(product);  $event.stopPropagation()"></p-button>
-                            </ng-template>
-                        </div>
-
-                    </div>
-                </ng-template>
-            </p-card>
-        </div>
+      <div class="col-md-2 d-grid">
+        <button pButton label="Limpiar" icon="pi pi-times" class="p-button-secondary rounded-3"
+          (click)="clearFilters()"></button>
+      </div>
 
     </div>
-</div>  
+  </div>
+
+  <div class="row g-4">
+    <div class="col-12 col-md-6 col-lg-4" *ngFor="let product of products">
+      <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+
+        <img
+          [src]="product.imageUrl || 'https://via.placeholder.com/600x400?text=Producto'"
+          class="w-100"
+          style="height: 220px; object-fit: cover;"
+          alt="{{ product.name }}" />
+
+        <div class="card-body d-flex flex-column" (click)="verProducto(product._id)">
+          <div class="text-primary fw-bold fs-4 mb-2">${{ product.price }}</div>
+          <h5 class="card-title mb-1">{{ product.name }}</h5>
+          <p class="text-muted mb-2" style="font-size: 0.85rem;">{{ product.category }}</p>
+          <p class="text-secondary flex-grow-1" style="font-size: 0.9rem;">{{ product.description }}</p>
+        </div>
+
+        <div class="card-footer bg-white border-0 p-3">
+          <button
+            pButton
+            label="Comprar ahora"
+            icon="pi pi-shopping-cart"
+            class="p-button-lg p-button-rounded p-button-success w-100"
+            (click)="toggleCart(product)">
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

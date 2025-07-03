@@ -1,0 +1,77 @@
+<div class="container mt-5" *ngIf="!isLoading; else loading">
+  <div *ngIf="order; else error">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0">Detalle del pedido</h2>
+      <span
+        class="badge fs-6 px-4 py-2 text-uppercase"
+        [ngClass]="{
+          'bg-success text-white': order.status === 'paid',
+          'bg-danger text-white': order.status === 'expired',
+          'bg-secondary text-white': order.status === 'pending'
+        }"
+        style="border-radius: 2rem;"
+      >
+        {{
+          order.status === 'paid'
+          ? 'Pagado'
+          : order.status === 'pending'
+          ? 'Pendiente'
+          : order.status === 'expired'
+          ? 'Expirado'
+          : order.status
+          }}
+      </span>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-7">
+        <div class="mb-4">
+          <p><strong>ID de la orden:</strong> {{ order._id }}</p>
+          <p><strong>Método de pago:</strong> {{ order.paymentMethod | titlecase }}</p>
+          <p><strong>Total:</strong> ${{ order.total }}</p>
+          <p><strong>Fecha de creación:</strong> {{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+        </div>
+
+        <div class="mb-4 p-4 border rounded bg-light" *ngIf="order.transferData !== null">
+          <h5 class="mb-3 text-primary">📌 Datos para realizar la transferencia:</h5>
+          <p><strong>Alias:</strong> {{ order.transferData?.alias }}</p>
+          <p><strong>CVU:</strong> {{ order.transferData?.cvu }}</p>
+          <p><strong>Titular:</strong> {{ order.transferData?.fullName }}</p>
+          <p><strong>CUIL:</strong> {{ order.transferData?.cuil }}</p>
+        </div>
+
+        <div class="mb-4 p-4 border rounded bg-white">
+          <h5 class="mb-3 text-primary">👤 Datos del comprador</h5>
+          <p><strong>Nombre:</strong> {{ order.user?.name }}</p>
+          <p><strong>Email:</strong> {{ order.user?.email }}</p>
+          <p><strong>Teléfono:</strong> {{ order.user?.phone }}</p>
+          <p><strong>Dirección:</strong> {{ order.user?.address }}</p>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <h5 class="mb-3">🛒 Productos</h5>
+        <div class="row g-3">
+          <div class="col-12 col-sm-6" *ngFor="let item of order.items">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+              <div class="card-body">
+                <h6 class="card-title">{{ item.productId?.name }}</h6>
+                <p class="card-text mb-0"><strong>Cantidad:</strong> {{ item.quantity }}</p>
+                <p class="text-muted small">ID producto: {{ item.productId?._id }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<ng-template #loading>
+  <p class="text-center">Cargando orden...</p>
+</ng-template>
+
+<ng-template #error>
+  <p class="text-danger">{{ errorMessage }}</p>
+</ng-template>

@@ -60,6 +60,10 @@ export class DetailProductoComponent {
     }
   }
 
+  toggleCart(product: Product) {
+    this.cartService.toggleCart();
+    this.cartService.addProduct(product._id);
+  }
   eliminarDelCarrito() {
     if (this.product) {
       this.cartService.removeProduct(this.product._id)

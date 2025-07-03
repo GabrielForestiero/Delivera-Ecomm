@@ -69,19 +69,28 @@ export class RegisterComponent {
         next: () => {
           this.isLoading = false;
           this.successMessage = 'Usuario registrado exitosamente';
-          setTimeout(() => this.router.navigate(['/dashboard']), 2000);
+
+          const userSub = this.authService.user$.subscribe(user => {
+            if (user?.role === 'admin') {
+              this.router.navigate(['/admin']);
+            } else {
+              this.router.navigate(['/']);
+            }
+            userSub.unsubscribe();
+          });
         },
-        error: (error) => {
+        error: (error: any) => {
           this.isLoading = false;
           this.errorMessage =
             error.error?.message ||
             (error.status === 400
               ? 'Datos inválidos. Verifica la información ingresada.'
               : error.status === 409
-              ? 'El email ya está registrado.'
-              : 'Error al registrar usuario. Intenta nuevamente.');
+                ? 'El email ya está registrado.'
+                : 'Error al registrar usuario. Intenta nuevamente.');
         }
       });
+
     } else {
       Object.values(this.registerForm.controls).forEach(control => control.markAsTouched());
     }
