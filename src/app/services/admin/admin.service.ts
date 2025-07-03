@@ -6,8 +6,8 @@ import { environment } from '../../../environments/environment';
 export interface Order {
   _id: any;
   status: string;
-  total: number
-  paymentMethod: 'card'  | 'transfer' ;
+  total: number;
+  paymentMethod: 'card' | 'transfer';
   cardData?: {
     cardNumber: string;
     cardCvv: string;
@@ -16,14 +16,14 @@ export interface Order {
   };
 }
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
   private apiUrl = `${environment.apiBaseUrl}/api/order`;
+  private productUrl = `${environment.apiBaseUrl}/api/product`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('auth_token');
@@ -40,17 +40,24 @@ export class OrderService {
     });
   }
 
-updateOrderStatus(orderId: string, newStatus: string) {
-  const token = localStorage.getItem('auth_token');
+  updateOrderStatus(orderId: string, newStatus: string) {
+    const headers = this.getHeaders();
+    return this.http.patch(`${this.apiUrl}/${orderId}`, { newOrderStatus: newStatus }, { headers });
+  }
 
-  const headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
-    'x-api-key': 'my-secret-api-key'
-  });
-
-  return this.http.patch(`${this.apiUrl}/${orderId}`, { newOrderStatus: newStatus }, { headers });
-}
-
-
+  createProduct(product: {
+    name: string;
+    description?: string;
+    price: number;
+    stock: number;
+    imageUrl?: string;
+    category: string;
+  }): Observable<any> {
+    const headers = this.getHeaders();
+    const body = {
+      ...product,
+      originalStock: product.stock
+    };
+    return this.http.post(this.productUrl, body, { headers });
+  }
 }

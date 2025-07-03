@@ -13,6 +13,15 @@ interface NotificationToast {
   message: string;
 }
 
+interface NewProduct {
+  name: string;
+  description?: string;
+  price: number;
+  stock: number;
+  imageUrl?: string;
+  category: string;
+}
+
 @Component({
   selector: 'app-admin-orders',
   standalone: true,
@@ -29,28 +38,59 @@ interface NotificationToast {
   styleUrls: ['./admin-dashboard.css']
 })
 export class AdminDashboardComponent implements OnInit {
+  // Tab management
+  activeTab: 'orders' | 'products' = 'orders';
+
+  // Orders data
   orders: (Order & { tempStatus: string })[] = [];
   filteredOrders: (Order & { tempStatus: string })[] = [];
   loading = true;
   updating = false;
 
-  searchId = '';  
-  filterStatus = '';  
-  filterPaymentMethod = '';  
+  // Filters
+  searchId = '';
+  filterStatus = '';
+  filterPaymentMethod = '';
 
+  // Notifications
   notification: NotificationToast | null = null;
 
+  // Status options
   statusOptions = [
     { label: 'Pendiente', value: 'pending' },
     { label: 'Pagado', value: 'paid' },
     { label: 'Expirado', value: 'expired' }
   ];
 
-  constructor(private orderService: OrderService) {}
+  // Product creation
+  newProduct: NewProduct = {
+    name: '',
+    description: '',
+    price: 0,
+    stock: 0,
+    imageUrl: '',
+    category: ''
+  };
+
+  productCategories = [
+    'Bebidas', 'Comidas', 'Postres', 'Snacks', 'Cerveza', 'Vino', 'Tragos',
+    'Sin alcohol', 'Promoción', 'Happy Hour', 'Vegano', 'Apto Celíacos',
+    'Café y Té', 'Entradas', 'Hamburguesas', 'Pizzas', 'Pastas', 'Sushi', 'Otros'
+  ];
+
+  creatingProduct = false;
+
+  constructor(private orderService: OrderService) { }
 
   ngOnInit(): void {
     this.loadOrders();
   }
+
+
+  setActiveTab(tab: 'orders' | 'products'): void {
+    this.activeTab = tab;
+  }
+
 
   loadOrders(): void {
     this.loading = true;
@@ -73,11 +113,10 @@ export class AdminDashboardComponent implements OnInit {
 
   applyFilters(): void {
     this.filteredOrders = this.orders.filter(order => {
-      const matchesSearch = !this.searchId || 
+      const matchesSearch = !this.searchId ||
         order._id.toLowerCase().includes(this.searchId.toLowerCase());
       const matchesStatus = !this.filterStatus || order.status === this.filterStatus;
       const matchesPayment = !this.filterPaymentMethod || order.paymentMethod === this.filterPaymentMethod;
-      
       return matchesSearch && matchesStatus && matchesPayment;
     });
   }
@@ -87,20 +126,18 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   onTempStatusChange(order: Order & { tempStatus: string }): void {
-    
+
   }
 
   confirmStatusUpdate(order: Order & { tempStatus: string }): void {
-    if (order.tempStatus === order.status) {
-      return;
-    }
+    if (order.tempStatus === order.status) return;
 
     this.updating = true;
     this.orderService.updateOrderStatus(order._id, order.tempStatus).subscribe({
       next: () => {
         const oldStatus = order.status;
         order.status = order.tempStatus;
-        this.showNotification('success', 
+        this.showNotification('success',
           `Orden ${order._id} actualizada de "${this.getStatusLabel(oldStatus)}" a "${this.getStatusLabel(order.status)}"`
         );
         this.updating = false;
@@ -113,17 +150,10 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
- 
-  viewOrder(order: Order): void {
-    
-    console.log('Ver orden:', order);
-    
-  }
-
-
   trackByOrderId(index: number, order: Order): string {
     return order._id;
   }
+
 
   getPendingOrdersCount(): number {
     return this.orders.filter(order => order.status === 'pending').length;
@@ -134,6 +164,7 @@ export class AdminDashboardComponent implements OnInit {
       .filter(order => order.status === 'paid')
       .reduce((total, order) => total + order.total, 0);
   }
+
 
   getStatusClass(status: string): string {
     const statusClasses: { [key: string]: string } = {
@@ -152,10 +183,10 @@ export class AdminDashboardComponent implements OnInit {
   getPaymentIcon(paymentMethod: string): string {
     const icons: { [key: string]: string } = {
       'credit-card': 'fas fa-credit-card',
-      'card': 'fas fa-credit-card', 
+      'card': 'fas fa-credit-card',
       'paypal': 'fab fa-paypal',
       'bank-transfer': 'fas fa-university',
-      'transfer': 'fas fa-university'  
+      'transfer': 'fas fa-university'
     };
     return icons[paymentMethod] || 'fas fa-money-bill';
   }
@@ -163,20 +194,18 @@ export class AdminDashboardComponent implements OnInit {
   getPaymentMethodLabel(paymentMethod: string): string {
     const labels: { [key: string]: string } = {
       'credit-card': 'Tarjeta de Crédito',
-      'card': 'Tarjeta', 
+      'card': 'Tarjeta',
       'paypal': 'PayPal',
       'bank-transfer': 'Transferencia Bancaria',
-      'transfer': 'Transferencia'  
+      'transfer': 'Transferencia'
     };
     return labels[paymentMethod] || paymentMethod;
   }
 
+
   showNotification(type: NotificationToast['type'], message: string): void {
     this.notification = { type, message };
-    
-    setTimeout(() => {
-      this.notification = null;
-    }, 4000);
+    setTimeout(() => this.notification = null, 4000);
   }
 
   getNotificationIcon(type: NotificationToast['type']): string {
@@ -187,5 +216,47 @@ export class AdminDashboardComponent implements OnInit {
       'info': 'fas fa-info-circle'
     };
     return icons[type];
+  }
+
+  createProduct(): void {
+    if (!this.isProductFormValid()) {
+      this.showNotification('error', 'Por favor complete todos los campos obligatorios');
+      return;
+    }
+
+    this.creatingProduct = true;
+    this.orderService.createProduct(this.newProduct).subscribe({
+      next: () => {
+        this.showNotification('success', 'Producto creado correctamente');
+        this.resetProductForm();
+        this.creatingProduct = false;
+      },
+      error: (err) => {
+        console.error('Error al crear producto', err);
+        this.showNotification('error', 'Hubo un error al crear el producto');
+        this.creatingProduct = false;
+      }
+    });
+  }
+
+  resetProductForm(form?: any): void {
+    this.newProduct = {
+      name: '',
+      description: '',
+      price: 0,
+      stock: 0,
+      imageUrl: '',
+      category: ''
+    };
+
+    if (form) {
+      form.resetForm();
+    }
+  }
+
+  private isProductFormValid(): boolean {
+    return !!(this.newProduct.name &&
+      this.newProduct.price > 0 &&
+      this.newProduct.category);
   }
 }
