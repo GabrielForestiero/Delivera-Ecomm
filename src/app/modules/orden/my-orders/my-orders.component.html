@@ -1,24 +1,47 @@
-<div *ngIf="isLoading" class="loading">Cargando órdenes...</div>
-
-<div *ngIf="!isLoading && errorMessage" class="error">
-  {{ errorMessage }}
+<div *ngIf="isLoading" class="loading-container">
+  <div class="loading-spinner">
+    <i class="pi pi-spinner pi-spin"></i>
+  </div>
+  <div class="loading-text">Cargando órdenes...</div>
 </div>
 
-<div *ngIf="!isLoading && order?.length === 0" class="no-orders">
-  No tenés órdenes registradas.
+<div *ngIf="!isLoading && errorMessage" class="error-container">
+  <div class="error-icon">
+    <i class="pi pi-exclamation-triangle"></i>
+  </div>
+  <div class="error-text">{{ errorMessage }}</div>
+</div>
+
+<div *ngIf="!isLoading && order?.length === 0" class="no-orders-container">
+  <div class="no-orders-icon">
+    <i class="pi pi-inbox"></i>
+  </div>
+  <div class="no-orders-text">No tenés órdenes registradas.</div>
+  <div class="no-orders-subtitle">Cuando realices tu primera compra, aparecerá aquí.</div>
 </div>
 
 <div class="orders-container" *ngIf="!isLoading && order?.length > 0">
-  <h2>Mis Ordenes:</h2>
+  <div class="orders-header">
+    <h2 class="orders-title">
+      <i class="pi pi-list"></i>
+      Mis Órdenes
+    </h2>
+    <div class="orders-count">{{ order.length }} órdenes</div>
+  </div>
+  
   <div class="order-card" *ngFor="let o of order" (click)="goToOrderDetail(o._id)">
-    <div class="order-id">Número de orden: <span>{{ o._id }}</span></div>
-
-    <div class="order-info">
-      <div><strong>Monto</strong><br />${{ o.total }}</div>
-      <div><strong>Método</strong><br />{{ o.paymentMethod === 'card' ? 'Tarjeta' : 'Transferencia' }}</div>
-      <div>
-        <strong>Estado</strong><br />
-        <span [ngClass]="o.status">
+    <div class="order-header">
+      <div class="order-id">
+        <span class="order-label">Orden #</span>
+        <span class="order-number">{{ o._id }}</span>
+      </div>
+      <div class="order-status-badge" [ngClass]="'status-' + o.status">
+        <i class="pi" [ngClass]="{
+          'pi-check-circle': o.status === 'paid',
+          'pi-clock': o.status === 'pending',
+          'pi-times-circle': o.status === 'expired'
+        }"></i>
+        <span>
           {{
           o.status === 'paid'
           ? 'Pagado'
@@ -30,7 +53,42 @@
           }}
         </span>
       </div>
-      <div><strong>Fecha</strong><br />{{ o.createdAt | date: 'short' }}</div>
+    </div>
+
+    <div class="order-info">
+      <div class="info-item">
+        <div class="info-icon">
+          <i class="pi pi-dollar"></i>
+        </div>
+        <div class="info-content">
+          <div class="info-label">Monto</div>
+          <div class="info-value">${{ o.total }}</div>
+        </div>
+      </div>
+      
+      <div class="info-item">
+        <div class="info-icon">
+          <i class="pi pi-credit-card"></i>
+        </div>
+        <div class="info-content">
+          <div class="info-label">Método</div>
+          <div class="info-value">{{ o.paymentMethod === 'card' ? 'Tarjeta' : 'Transferencia' }}</div>
+        </div>
+      </div>
+      
+      <div class="info-item">
+        <div class="info-icon">
+          <i class="pi pi-calendar"></i>
+        </div>
+        <div class="info-content">
+          <div class="info-label">Fecha</div>
+          <div class="info-value">{{ o.createdAt | date: 'short' }}</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="order-action">
+      <i class="pi pi-chevron-right"></i>
     </div>
   </div>
 </div>

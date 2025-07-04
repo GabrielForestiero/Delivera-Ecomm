@@ -1,36 +1,55 @@
-<div *ngIf="product; else notFound" class="w-100 vh-100 d-flex align-items-center justify-content-center bg-light">
-  <div class="container-fluid px-5">
-    <div class="row g-5 align-items-center">
+<div *ngIf="product; else notFound" class="product-detail-container">
+  <div class="product-detail-wrapper">
+    <div class="product-content">
 
-      <!-- Imagen del producto -->
-      <div class="col-md-6 text-center">
-        <img
-          [src]="product.imageUrl || 'https://via.placeholder.com/700x700?text=Producto'"
-          class="img-fluid rounded-4 shadow-sm"
-          alt="{{ product.name }}"
-          style="max-height: 600px; object-fit: contain;"
-        />
+      
+      <div class="product-image-section">
+        <div class="image-container">
+          <img
+            [src]="product.imageUrl || 'https://via.placeholder.com/700x700?text=Producto'"
+            class="product-image"
+            alt="{{ product.name }}"
+          />
+          <div class="image-overlay">
+            <i class="pi pi-search-plus"></i>
+          </div>
+        </div>
       </div>
 
-      <div class="col-md-6">
-        <h1 class="fw-bold display-5 mb-3">{{ product.name }}</h1>
-        <p class="text-muted fs-5 mb-2"><strong>Categoría:</strong> {{ product.category }}</p>
-        <p class="fs-5">{{ product.description }}</p>
-
-        <div class="my-4">
-          <span class="text-success fw-bold display-6">${{ product.price }}</span>
+     
+      <div class="product-info-section">
+        <div class="product-header">
+          <div class="product-category">
+            <i class="pi pi-tag"></i>
+            <span>{{ product.category }}</span>
+          </div>
+          <h1 class="product-title">{{ product.name }}</h1>
         </div>
 
-        <div>
-
-            <button
-              pButton
-              label="Agregar al carrito"
-              icon="pi pi-shopping-cart"
-              class="p-button-lg p-button-success p-button-rounded"
-              (click)="toggleCart(product)"
-            ></button>
+        <div class="product-description">
+          <p>{{ product.description }}</p>
         </div>
+
+        <div class="product-price-section">
+          <div class="price-container">
+            <span class="price-label">Precio</span>
+            <span class="price-value">${{ product.price }}</span>
+          </div>
+        </div>
+
+        <div class="product-actions">
+          <button
+            class="add-to-cart-btn"
+            (click)="toggleCart(product)">
+            <div class="btn-content">
+              <i class="pi pi-shopping-cart"></i>
+              <span>Agregar al carrito</span>
+            </div>
+            <div class="btn-shimmer"></div>
+          </button>
+        </div>
+
+      
       </div>
 
     </div>
@@ -38,10 +57,19 @@
 </div>
 
 <ng-template #notFound>
-  <div class="w-100 vh-100 d-flex align-items-center justify-content-center bg-light">
-    <div class="text-center">
-      <h3 class="text-danger">Producto no encontrado</h3>
-      <p>Verificá si el producto fue eliminado o si el enlace es incorrecto.</p>
+  <div class="not-found-container">
+    <div class="not-found-content">
+      <div class="not-found-icon">
+        <i class="pi pi-exclamation-triangle"></i>
+      </div>
+      <h3 class="not-found-title">Producto no encontrado</h3>
+      <p class="not-found-description">
+        Verificá si el producto fue eliminado o si el enlace es incorrecto.
+      </p>
+      <button class="back-btn" (click)="goBack()">
+        <i class="pi pi-arrow-left"></i>
+        <span>Volver al catálogo</span>
+      </button>
     </div>
   </div>
 </ng-template>
