@@ -41,9 +41,15 @@ export class ListProductosComponent {
     private productService: ProductService,
     private cartService: CartService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
+    const storedName = localStorage.getItem('searchName');
+    const storedCategory = localStorage.getItem('selectedCategory');
+
+    if (storedName) this.searchName = storedName;
+    if (storedCategory) this.selectedCategory = storedCategory;
+
     this.loadProducts();
 
     this.cartService.getCart();
@@ -52,10 +58,11 @@ export class ListProductosComponent {
         this.carrito = cart;
       })
     );
+
   }
 
   loadProducts(): void {
-    this.productService.getFilteredProducts( this.searchName, this.selectedCategory
+    this.productService.getFilteredProducts(this.searchName, this.selectedCategory
     ).subscribe(({ products, total }) => {
       this.products = products;
       this.totalItems = total;
@@ -65,16 +72,25 @@ export class ListProductosComponent {
     this.router.navigate(['/productos', id]);
   }
 
-clearFilters() {
-  this.searchName = '';
-  this.selectedCategory = '';
-  this.currentPage = 1;
-  this.loadProducts();
-}
+  clearFilters() {
+    this.searchName = '';
+    this.selectedCategory = '';
+    this.currentPage = 1;
+
+
+    localStorage.removeItem('searchName');
+    localStorage.removeItem('selectedCategory');
+
+    this.loadProducts();
+  }
 
 
   onFilterChange() {
     this.currentPage = 1;
+
+    localStorage.setItem('searchName', this.searchName);
+    localStorage.setItem('selectedCategory', this.selectedCategory);
+
     this.loadProducts();
   }
 

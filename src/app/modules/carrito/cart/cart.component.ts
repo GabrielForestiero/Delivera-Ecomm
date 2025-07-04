@@ -32,6 +32,8 @@ export class CartComponent {
     cardHolder: ''
   };
 
+  cardErrorMessage: string | null = null;
+
   private subscription?: Subscription;
 
   constructor(
@@ -78,29 +80,29 @@ export class CartComponent {
   processPayment(): void {
     if (this.paymentMethod === 'card') {
 
+      this.cardErrorMessage = null;
+
       if (!this.cardData.cardNumber || !this.cardData.cardCvv ||
         !this.cardData.cardValidThru || !this.cardData.cardHolder) {
-        alert('Por favor, completa todos los datos de la tarjeta');
+        this.cardErrorMessage = 'Por favor, completá todos los datos de la tarjeta';
         return;
       }
-
 
       if (!this.isValidCardNumber(this.cardData.cardNumber)) {
-        alert('El número de tarjeta no es válido');
+        this.cardErrorMessage = 'El número de tarjeta no es válido';
         return;
       }
-
 
       if (!this.isValidCVV(this.cardData.cardCvv)) {
-        alert('El CVV debe tener 3 o 4 dígitos');
+        this.cardErrorMessage = 'El CVV debe tener 3 o 4 dígitos';
         return;
       }
-
 
       if (!this.isValidExpiryDate(this.cardData.cardValidThru)) {
-        alert('La fecha de vencimiento no es válida o la tarjeta está vencida');
+        this.cardErrorMessage = 'La fecha de vencimiento no es válida o está vencida';
         return;
       }
+
     }
 
     this.isProcessingOrder = true;
@@ -205,6 +207,7 @@ export class CartComponent {
       cardValidThru: '',
       cardHolder: ''
     };
+    this.cardErrorMessage = null;
   }
 
   cancelPayment(): void {
