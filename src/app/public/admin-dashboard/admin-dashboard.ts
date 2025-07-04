@@ -18,8 +18,8 @@ interface NewProduct {
   description?: string;
   price: number;
   stock: number;
-  imageUrl?: string;
   category: string;
+  image?: File;
 }
 
 @Component({
@@ -38,39 +38,45 @@ interface NewProduct {
   styleUrls: ['./admin-dashboard.css']
 })
 export class AdminDashboardComponent implements OnInit {
-  // Tab management
+
   activeTab: 'orders' | 'products' = 'orders';
 
-  // Orders data
+
   orders: (Order & { tempStatus: string })[] = [];
   filteredOrders: (Order & { tempStatus: string })[] = [];
   loading = true;
   updating = false;
 
-  // Filters
+
   searchId = '';
   filterStatus = '';
   filterPaymentMethod = '';
 
-  // Notifications
+
   notification: NotificationToast | null = null;
 
-  // Status options
+
   statusOptions = [
     { label: 'Pendiente', value: 'pending' },
     { label: 'Pagado', value: 'paid' },
     { label: 'Expirado', value: 'expired' }
   ];
 
-  // Product creation
+
   newProduct: NewProduct = {
     name: '',
     description: '',
     price: 0,
     stock: 0,
-    imageUrl: '',
-    category: ''
+    category: '',
+    image: undefined
   };
+
+
+  selectedFileName: string = '';
+
+
+  imagePreview: string | null = null;
 
   productCategories = [
     'Bebidas', 'Comidas', 'Postres', 'Snacks', 'Cerveza', 'Vino', 'Tragos',
@@ -86,11 +92,9 @@ export class AdminDashboardComponent implements OnInit {
     this.loadOrders();
   }
 
-
   setActiveTab(tab: 'orders' | 'products'): void {
     this.activeTab = tab;
   }
-
 
   loadOrders(): void {
     this.loading = true;
@@ -154,7 +158,6 @@ export class AdminDashboardComponent implements OnInit {
     return order._id;
   }
 
-
   getPendingOrdersCount(): number {
     return this.orders.filter(order => order.status === 'pending').length;
   }
@@ -164,7 +167,6 @@ export class AdminDashboardComponent implements OnInit {
       .filter(order => order.status === 'paid')
       .reduce((total, order) => total + order.total, 0);
   }
-
 
   getStatusClass(status: string): string {
     const statusClasses: { [key: string]: string } = {
@@ -202,7 +204,6 @@ export class AdminDashboardComponent implements OnInit {
     return labels[paymentMethod] || paymentMethod;
   }
 
-
   showNotification(type: NotificationToast['type'], message: string): void {
     this.notification = { type, message };
     setTimeout(() => this.notification = null, 4000);
@@ -216,6 +217,47 @@ export class AdminDashboardComponent implements OnInit {
       'info': 'fas fa-info-circle'
     };
     return icons[type];
+  }
+
+
+  onFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+
+      if (!file.type.startsWith('image/')) {
+        this.showNotification('error', 'Por favor seleccione un archivo de imagen válido');
+        return;
+      }
+
+
+      if (file.size > 5 * 1024 * 1024) {
+        this.showNotification('error', 'La imagen debe ser menor a 5MB');
+        return;
+      }
+
+      this.newProduct.image = file;
+      this.selectedFileName = file.name;
+
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.imagePreview = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+
+  clearImage(): void {
+    this.newProduct.image = undefined;
+    this.selectedFileName = '';
+    this.imagePreview = null;
+
+
+    const fileInput = document.getElementById('imageInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   }
 
   createProduct(): void {
@@ -245,9 +287,18 @@ export class AdminDashboardComponent implements OnInit {
       description: '',
       price: 0,
       stock: 0,
-      imageUrl: '',
-      category: ''
+      category: '',
+      image: undefined
     };
+
+    this.selectedFileName = '';
+    this.imagePreview = null;
+
+
+    const fileInput = document.getElementById('imageInput') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
 
     if (form) {
       form.resetForm();
