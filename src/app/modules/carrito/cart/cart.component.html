@@ -1,7 +1,6 @@
 <div class="cart-sidebar" [class.open]="isOpen">
   <div class="cart-container" *ngIf="cart.items.length > 0; else emptyCart">
 
-
     <div class="cart-header">
       <div class="cart-header-content">
         <div class="cart-title-section">
@@ -19,7 +18,6 @@
         </button>
       </div>
     </div>
-
 
     <div class="cart-items-scroll">
       <div class="cart-item" *ngFor="let item of cart.items">
@@ -71,7 +69,6 @@
     </div>
   </div>
 
-
   <ng-template #emptyCart>
     <div class="empty-cart">
       <div class="empty-cart-content">
@@ -91,84 +88,109 @@
 
 
 <p-dialog [(visible)]="showPaymentDialog" [modal]="true" [closable]="false" header="Seleccionar método de pago"
-  [style]="{width: '90vw', maxWidth: '500px'}" styleClass="payment-dialog">
+  [style]="{width: '90vw', maxWidth: '500px'}" styleClass="modern-payment-dialog">
 
-  <div class="payment-form">
-    <div class="payment-methods">
-      <h5 class="payment-title">Método de pago</h5>
+  <div class="payment-form-container">
+    <div class="payment-methods-section">
+      <h5 class="payment-section-title">Método de pago</h5>
 
-      <div class="payment-option">
-        <div class="payment-radio">
+      <div class="payment-method-option">
+        <div class="payment-radio-wrapper">
           <p-radioButton name="payment" value="transfer" [(ngModel)]="paymentMethod" inputId="transfer"></p-radioButton>
-          <label for="transfer" class="payment-label">
-            <i class="pi pi-send"></i>
+          <label for="transfer" class="payment-method-label">
+            <div class="payment-icon-wrapper">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14,2 14,8 20,8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+              </svg>
+            </div>
             <span>Transferencia bancaria</span>
           </label>
         </div>
       </div>
 
-      <div class="payment-option">
-        <div class="payment-radio">
+      <div class="payment-method-option">
+        <div class="payment-radio-wrapper">
           <p-radioButton name="payment" value="card" [(ngModel)]="paymentMethod" inputId="card"></p-radioButton>
-          <label for="card" class="payment-label">
-            <i class="pi pi-credit-card"></i>
+          <label for="card" class="payment-method-label">
+            <div class="payment-icon-wrapper">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                <line x1="1" y1="10" x2="23" y2="10" />
+              </svg>
+            </div>
             <span>Tarjeta de crédito/débito</span>
           </label>
         </div>
       </div>
     </div>
 
+    <div *ngIf="paymentMethod === 'card'" class="card-details-form">
+      <h6 class="card-form-subtitle">Datos de la tarjeta</h6>
 
-    <div *ngIf="paymentMethod === 'card'" class="card-form">
-      <h6 class="card-form-title">Datos de la tarjeta</h6>
-
-      <div class="form-group">
-        <label class="form-label">Titular de la tarjeta</label>
-        <input pInputText [(ngModel)]="cardData.cardHolder" placeholder="Nombre completo" class="form-input">
+      <div class="form-field-group">
+        <label class="field-label">Titular de la tarjeta</label>
+        <input pInputText [(ngModel)]="cardData.cardHolder" placeholder="Nombre completo" class="field-input">
       </div>
 
-      <div class="form-group">
-        <label class="form-label">Número de tarjeta</label>
+      <div class="form-field-group">
+        <label class="field-label">Número de tarjeta</label>
         <input pInputText [(ngModel)]="cardData.cardNumber" (input)="formatCardNumber($event)"
-          placeholder="1234 5678 9012 3456" maxlength="19" class="form-input">
-        <small class="form-hint">Puedes usar: 4111 1111 1111 1111 (Visa de prueba)</small>
+          placeholder="1234 5678 9012 3456" maxlength="19" class="field-input">
+
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Fecha de vencimiento</label>
+      <div class="form-field-row">
+        <div class="form-field-group">
+          <label class="field-label">Fecha de vencimiento</label>
           <input pInputText [(ngModel)]="cardData.cardValidThru" (input)="formatExpiryDate($event)" placeholder="MM/AA"
-            maxlength="5" class="form-input">
+            maxlength="5" class="field-input">
         </div>
-        <div class="form-group">
-          <label class="form-label">CVV</label>
+        <div class="form-field-group">
+          <label class="field-label">CVV</label>
           <input pInputText [(ngModel)]="cardData.cardCvv" (input)="formatCVV($event)" placeholder="123" maxlength="4"
-            class="form-input">
+            class="field-input">
         </div>
       </div>
     </div>
 
-
-    <div *ngIf="paymentMethod === 'transfer'" class="transfer-info">
-      <div class="transfer-card">
-        <i class="pi pi-info-circle"></i>
+    <div *ngIf="paymentMethod === 'transfer'" class="transfer-info-section">
+      <div class="transfer-info-card">
+        <div class="transfer-info-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+        </div>
         <p><strong>Los datos de la transferencia se visualizarán en tu orden</strong></p>
       </div>
+
     </div>
+
   </div>
 
-  <ng-template pTemplate="footer">
-    <div class="payment-footer">
-      <button class="payment-btn cancel-btn" (click)="cancelPayment()">
-        <i class="pi pi-times"></i>
-        <span>Cancelar</span>
-      </button>
-      <button class="payment-btn confirm-btn" (click)="processPayment()" [disabled]="isProcessingOrder"
-        [class.loading]="isProcessingOrder">
-        <i class="pi pi-check" *ngIf="!isProcessingOrder"></i>
-        <i class="pi pi-spinner pi-spin" *ngIf="isProcessingOrder"></i>
-        <span>{{ isProcessingOrder ? 'Procesando...' : 'Confirmar Compra' }}</span>
-      </button>
-    </div>
-  </ng-template>
+  <div class="payment-dialog-footer">
+    <button class="dialog-btn cancel-dialog-btn" (click)="cancelPayment()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+      <span>Cancelar</span>
+    </button>
+
+    <button class="dialog-btn confirm-dialog-btn" (click)="processPayment()" [disabled]="isProcessingOrder"
+      [class.btn-loading]="isProcessingOrder">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        *ngIf="!isProcessingOrder">
+        <polyline points="20,6 9,17 4,12" />
+      </svg>
+      <div class="btn-spinner" *ngIf="isProcessingOrder">
+        <div class="spinner-circle"></div>
+      </div>
+      <span>{{ isProcessingOrder ? 'Procesando...' : 'Confirmar Compra' }}</span>
+    </button>
+  </div>
 </p-dialog>

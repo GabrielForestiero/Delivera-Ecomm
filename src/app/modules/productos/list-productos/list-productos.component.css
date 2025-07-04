@@ -18,18 +18,47 @@
   z-index: 100;
 }
 
+.filter-select {
+  padding: 0.75rem 1rem;
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  color: #4a5568;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23667eea' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  transform: translateY(-2px);
+}
+
+
 .filters-content {
   display: grid;
   grid-template-columns: 1fr 1fr auto;
   gap: 1.5rem;
   align-items: end;
+
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+
 }
+
+
 
 .filter-label {
   font-weight: 700;
@@ -37,6 +66,8 @@
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
+
+
 
 .filter-input {
   padding: 0.75rem 1rem;
@@ -83,6 +114,18 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
   z-index: 9999 !important;
 }
+
+
+.filter-input {
+  color: #333 !important;
+  background-color: white !important;
+  border: 1px solid #ccc;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
 
 :host ::ng-deep .p-dropdown-items-wrapper,
 .p-dropdown-items-wrapper {
@@ -377,6 +420,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -392,25 +436,25 @@
   .products-container {
     padding: 1rem;
   }
-  
+
   .filters-content {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .products-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .product-image-container {
     height: 200px;
   }
-  
+
   .product-content {
     padding: 1rem;
   }
-  
+
   .product-footer {
     padding: 1rem;
   }
@@ -420,13 +464,13 @@
   .filters-card {
     padding: 1rem;
   }
-  
+
   .product-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
+
   .product-price {
     font-size: 1.25rem;
   }

@@ -37,17 +37,17 @@
             <p-message *ngIf="successMessage" severity="success" [text]="successMessage"
                 styleClass="w-full mb-3"></p-message>
             <div style="text-align: right; margin-top: 1rem;">
-            <p-button type="submit" label="Iniciar Sesión" [disabled]="loginForm.invalid || isLoading"
-                [loading]="isLoading" styleClass="w-full" size="large"></p-button>
-</div>
+                <p-button type="submit" label="Iniciar Sesión" [disabled]="loginForm.invalid || isLoading"
+                    [loading]="isLoading" styleClass="w-full" size="large"></p-button>
+            </div>
 
 
-</form>
+        </form>
 
-<p-divider></p-divider>
+        <p-divider></p-divider>
 
-<div class="register-link">
-    <p>¿No tienes cuenta? <a routerLink="/auth/register" class="link">Regístrate aquí</a></p>
-</div>
-</p-card>
+        <div class="register-link">
+            <p>¿No tienes cuenta? <a routerLink="/auth/register" class="link">Regístrate aquí</a></p>
+        </div>
+    </p-card>
 </div>
