@@ -2,21 +2,18 @@
   <div class="product-detail-wrapper">
     <div class="product-content">
 
-      
+
       <div class="product-image-section">
         <div class="image-container">
-          <img
-            [src]="product.imageUrl || 'https://via.placeholder.com/700x700?text=Producto'"
-            class="product-image"
-            alt="{{ product.name }}"
-          />
+          <img [src]="product.imageUrl || 'https://via.placeholder.com/700x700?text=Producto'" class="product-image"
+            alt="{{ product.name }}" />
           <div class="image-overlay">
             <i class="pi pi-search-plus"></i>
           </div>
         </div>
       </div>
 
-     
+
       <div class="product-info-section">
         <div class="product-header">
           <div class="product-category">
@@ -38,9 +35,7 @@
         </div>
 
         <div class="product-actions">
-          <button
-            class="add-to-cart-btn"
-            (click)="toggleCart(product)">
+          <button class="add-to-cart-btn" (click)="toggleCart(product)">
             <div class="btn-content">
               <i class="pi pi-shopping-cart"></i>
               <span>Agregar al carrito</span>
@@ -49,7 +44,7 @@
           </button>
         </div>
 
-      
+
       </div>
 
     </div>

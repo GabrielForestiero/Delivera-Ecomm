@@ -8,12 +8,10 @@
           placeholder="Ej: Pizza, Sushi..." class="filter-input" />
       </div>
 
-      <div class="filter-group">
-        <label for="categoryFilter" class="filter-label">Filtrar por categoría</label>
-        <p-dropdown [options]="categories" [(ngModel)]="selectedCategory" (onChange)="onFilterChange()"
-          placeholder="Seleccionar categoría" [filter]="true" class="filter-dropdown">
-        </p-dropdown>
-      </div>
+      <select [(ngModel)]="selectedCategory" (change)="onFilterChange()" class="filter-select">
+        <option value="" disabled selected>Seleccionar categoría</option>
+        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+      </select>
 
       <div class="filter-actions">
         <button pButton label="Limpiar" icon="pi pi-times" class="clear-btn" (click)="clearFilters()">
