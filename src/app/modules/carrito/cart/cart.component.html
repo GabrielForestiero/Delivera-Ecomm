@@ -127,8 +127,12 @@
       </div>
     </div>
 
-    <div *ngIf="paymentMethod === 'card'" class="card-details-form">
-      <h6 class="card-form-subtitle">Datos de la tarjeta</h6>
+    <div *ngIf="cardErrorMessage" class="alert alert-danger mb-3">
+      <i class="pi pi-exclamation-triangle me-2"></i> {{ cardErrorMessage }}
+    </div>
+    
+    <div *ngIf="paymentMethod === 'card'" class="card-form">
+      <h6>Datos de la tarjeta</h6>
 
       <div class="form-field-group">
         <label class="field-label">Titular de la tarjeta</label>
