@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - Órdenes</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 </head>
 
 <body>
@@ -139,6 +140,7 @@
             </div>
         </div>
 
+        <!-- Products Tab Content -->
         <div class="tab-content" *ngIf="activeTab === 'products'">
             <div class="product-creation-section">
                 <div class="product-header">
@@ -190,7 +192,38 @@
                         </div>
                     </div>
 
+                    <!-- Sección de subida de imagen -->
+                    <div class="form-group full-width">
+                        <label class="form-label">
+                            <i class="fas fa-image"></i>
+                            Imagen del Producto
+                        </label>
+                        <div class="image-upload-container">
+                            <div class="file-input-wrapper">
+                                <input type="file" id="imageInput" class="file-input-custom" accept="image/*"
+                                    (change)="onFileSelected($event)">
+                                <label for="imageInput" class="file-input-button" [class.has-file]="selectedFileName">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span *ngIf="!selectedFileName">Seleccionar imagen</span>
+                                    <span *ngIf="selectedFileName">Cambiar imagen</span>
+                                </label>
+                            </div>
 
+                            <div *ngIf="selectedFileName" class="selected-file-info">
+                                <span class="file-name">
+                                    <i class="fas fa-file-image"></i>
+                                    {{ selectedFileName }}
+                                </span>
+                                <button type="button" class="clear-file-btn" (click)="clearImage()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+
+                            <div *ngIf="imagePreview" class="image-preview-container">
+                                <img [src]="imagePreview" alt="Vista previa" class="image-preview">
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="form-group full-width">
                         <label class="form-label">

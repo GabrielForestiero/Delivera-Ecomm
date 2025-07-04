@@ -34,6 +34,14 @@ export class OrderService {
     });
   }
 
+  private getFormDataHeaders(): HttpHeaders {
+    const token = localStorage.getItem('auth_token');
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'x-api-key': 'my-secret-api-key'
+    });
+  }
+
   getAllOrders(): Observable<Order[]> {
     return this.http.get<Order[]>(this.apiUrl, {
       headers: this.getHeaders()
@@ -50,14 +58,28 @@ export class OrderService {
     description?: string;
     price: number;
     stock: number;
-    imageUrl?: string;
     category: string;
+    image?: File;
   }): Observable<any> {
-    const headers = this.getHeaders();
-    const body = {
-      ...product,
-      originalStock: product.stock
-    };
-    return this.http.post(this.productUrl, body, { headers });
+
+    const formData = new FormData();
+
+    formData.append('name', product.name);
+    formData.append('price', product.price.toString());
+    formData.append('stock', product.stock.toString());
+    formData.append('originalStock', product.stock.toString());
+    formData.append('category', product.category);
+
+    if (product.description) {
+      formData.append('description', product.description);
+    }
+
+    if (product.image) {
+      formData.append('image', product.image, product.image.name);
+    }
+
+    const headers = this.getFormDataHeaders();
+
+    return this.http.post(this.productUrl, formData, { headers });
   }
 }
