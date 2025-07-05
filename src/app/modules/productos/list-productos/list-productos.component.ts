@@ -108,8 +108,7 @@ export class ListProductosComponent {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-    localStorage.removeItem('searchName');
-    localStorage.removeItem('selectedCategory');
+   
 
   }
 }

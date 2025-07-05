@@ -112,6 +112,8 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem('searchName');
+    localStorage.removeItem('selectedCategory');
     this.userSubject.next(null);
     this.isAuthenticatedSubject.next(false);
     this.router.navigate(['/auth/login']);
