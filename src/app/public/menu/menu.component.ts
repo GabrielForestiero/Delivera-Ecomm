@@ -69,13 +69,4 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.cartService.toggleCart();
   }
 
-  categoryItems: MenuItem[] = [
-    { label: 'Electrónica', icon: 'pi pi-desktop', command: () => this.onCategorySelect('Electrónica') },
-    { label: 'Ropa', icon: 'pi pi-tags', command: () => this.onCategorySelect('Ropa') },
-    { label: 'Accesorios', icon: 'pi pi-star', command: () => this.onCategorySelect('Accesorios') },
-  ];
-
-  onCategorySelect(category: string) {
-    console.log('Categoría seleccionada:', category);
-  }
 }
