@@ -51,7 +51,7 @@ export class ListProductosComponent {
     if (storedCategory) this.selectedCategory = storedCategory;
 
     this.loadProducts();
-
+    
     this.cartService.getCart();
     this.subscription.add(
       this.cartService.cart$.subscribe(cart => {
@@ -61,13 +61,20 @@ export class ListProductosComponent {
 
   }
 
-  loadProducts(): void {
-    this.productService.getFilteredProducts(this.searchName, this.selectedCategory
-    ).subscribe(({ products, total }) => {
-      this.products = products;
-      this.totalItems = total;
+ loadProducts(): void {
+  this.productService.getFilteredProducts(this.searchName, this.selectedCategory)
+    .subscribe({
+      next: ({ products, total }) => {
+        this.products = products;
+        this.totalItems = total;
+      },
+      error: () => {
+        this.products = [];
+      }
     });
-  }
+}
+
+  
   verProducto(id: string) {
     this.router.navigate(['/productos', id]);
   }
@@ -101,5 +108,8 @@ export class ListProductosComponent {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    localStorage.removeItem('searchName');
+    localStorage.removeItem('selectedCategory');
+
   }
 }

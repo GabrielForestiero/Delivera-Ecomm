@@ -414,6 +414,41 @@
   box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
 }
 
+.no-products-message {
+  text-align: center;
+  color: #6e6e6e;
+  font-size: 1.2rem;
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: #fafafa;
+  margin: 40px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-products-message {
+  text-align: center;
+  color: #718096; 
+  font-size: 1.2rem;
+  padding: 20px;
+  border: 2px dashed #718096; 
+  border-radius: 8px;
+  background-color: #f0f4f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-products-message i {
+  color: #718096; 
+  font-size: 1.5rem;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+
 /* Animaciones */
 @keyframes fadeInUp {
   from {
